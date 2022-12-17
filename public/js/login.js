@@ -191,6 +191,7 @@ const registerNewAccount = ({ avatar, email, password, fullname, age, gender }) 
         hideLoading();
         resetSignUpForm();
         hideSignUp();
+        console.log('hi')
       } else {
         alert("Cannot create your account. Please try again");
       }

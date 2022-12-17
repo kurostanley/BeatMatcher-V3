@@ -5,7 +5,7 @@ module.exports = function ({ app, dbConn, upload, constants }) {
     console.log(file)
     if (!file || !file.mimetype.includes("mpeg")) {
       res.status(200).jsonp({
-        message: "Please upload your avatar, the image should be .jpg format",
+        message: "Please upload your audio, the audio should be .mp3 format",
       });
     } else {
 
