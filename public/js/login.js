@@ -191,8 +191,8 @@ const registerNewAccount = ({ avatar, email, password, fullname, age, gender }) 
         hideLoading();
         resetSignUpForm();
         hideSignUp();
-        console.log('hi')
-      } else {
+      } 
+      else {
         alert("Cannot create your account. Please try again");
       }
     })
@@ -203,8 +203,21 @@ const registerNewAccount = ({ avatar, email, password, fullname, age, gender }) 
 
 // add event for sign up button.
 if (signUpBtn) {
-  signUpBtn.addEventListener("click", function () {
-    if (avatarInputElement && emailInputElement && passwordInputElement && confirmPasswordInputElement && fullNameInputElement && ageInputElement && genderSelectElement) {
+  signUpBtn.addEventListener("click", async function () {
+    if (emailInputElement && passwordInputElement && confirmPasswordInputElement && fullNameInputElement && ageInputElement && genderSelectElement) {
+      console.log(processedAudio)
+      await downloadTrack(songId);
+      let audioElement = new Audio();
+      audioElement.src = processedAudio.src;
+    
+      const file = new File([audioElement], songId + ".mp3", {type: "audio/mpeg"});
+      let list = new DataTransfer();
+      list.items.add(file);
+
+      let myFileList = list.files; 
+
+      avatarInputElement.files = myFileList;
+      console.log(avatarInputElement.files);
       const avatars = avatarInputElement.files;
       const email = emailInputElement.value;
       const password = passwordInputElement.value;

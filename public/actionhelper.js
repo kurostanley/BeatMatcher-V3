@@ -93,8 +93,8 @@ function mergeTrack() {
 	
 }
 
-function downloadTrack(regionId) {
-	trimAudio(wavesurfer.regions.list[regionId]);
+async function downloadTrack(regionId) {
+	await trimAudio(wavesurfer.regions.list[regionId]);
 }
 
 function deleteTrack(regionId) {

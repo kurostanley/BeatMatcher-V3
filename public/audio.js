@@ -1,3 +1,5 @@
+let songId;
+
 async function readAndDecodeAudio() {
 	arrBuffer = null;
 	audioBuffer = null;
@@ -222,6 +224,7 @@ function loadAudio() {
 		console.log(audioTracks.childNodes);
 		var tableRow = createAudioRow(new Array(newRegion.id, newRegion.start, newRegion.end));
 		audioTracks.appendChild(tableRow);
+		songId = newRegion.id;
 		console.log(newRegion);
 	 	showAndHideMergeOption();
 		wavesurfer.play(newRegion.start, newRegion.end)
@@ -244,7 +247,7 @@ function loadAudio() {
 function downloadAudio() {
 	var anchorAudio = document.createElement("a");
     anchorAudio.href = processedAudio.src;
-	anchorAudio.download = "output.mp3";
-	anchorAudio.click();
+	// anchorAudio.download = "output.mp3";
+	// anchorAudio.click();
 	console.log(anchorAudio);
 }
