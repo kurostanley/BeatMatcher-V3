@@ -8,6 +8,7 @@ module.exports = function ({ app, dbConn, constants }) {
         if (err) {
           res.status(200).jsonp({ message: "The system error. Please try again" });
         } else if (result && result.length !== 0) {
+          // Me already make a request before(if there has a bug)
           res.status(200).jsonp({ message: "The match request existed in the system." });
         } else {
           const findMatchRequestSql = "SELECT * FROM match_request WHERE match_request_from = ? AND match_request_to = ?";
@@ -15,6 +16,7 @@ module.exports = function ({ app, dbConn, constants }) {
             if (err) {
               res.status(200).jsonp({ message: "The system error. Please try again" });
             } else if (matchRequests && matchRequests.length !== 0) {
+              // matchRequestTo have already send me the request.
               // update the match request.
               const updateMatchRequestSql = "UPDATE match_request SET match_request_status = ?, accepted_date = ? WHERE id = ?";
               dbConn.query(updateMatchRequestSql, [constants.matchRequestStatus.accepted, new Date(), matchRequests[0].id], function (err, updatedResults) {

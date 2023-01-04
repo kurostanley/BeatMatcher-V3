@@ -26,8 +26,8 @@ function createAudioRow(arr) {
 		var tableData;
 		if(i==0) {
 			tableData = document.createElement("input");
-			tableData.setAttribute("type", "checkbox");
-			tableData.setAttribute("class", "w3-check w3-margin-left");
+			// // tableData.setAttribute("type", "checkbox");
+			// tableData.setAttribute("class", "w3-check w3-margin-left");
 		} else {
 			tableData = document.createElement("td");
 			tableData.innerText = arr[i].toFixed(4);
@@ -41,15 +41,15 @@ function createAudioRow(arr) {
 		{"action":"download", "iconClass":"fa fa-download"}, 
 		{"action":"delete", "iconClass":"fa fa-times"});
 	for(var i=0; i<actionsArray.length; i++) {
-		var tableData = document.createElement("td");
-		tableData.setAttribute("id", arr[0]+"-"+actionsArray[i].action);
-		var dataIcon = document.createElement("button");
-		dataIcon.setAttribute("title", actionsArray[i].action);
-		dataIcon.setAttribute("class", actionsArray[i].iconClass+" w3-button w3-white w3-border w3-border-light-green w3-round-large");
-		dataIcon.setAttribute("id", arr[0]+"-"+actionsArray[i].iconClass);
-		dataIcon.setAttribute("onClick", actionsArray[i].action+"Track('"+arr[0].toString()+"')"); 	
-		tableData.appendChild(dataIcon);
-		tableRow.appendChild(tableData);
+		// var tableData = document.createElement("td");
+		// tableData.setAttribute("id", arr[0]+"-"+actionsArray[i].action);
+		// var dataIcon = document.createElement("button");
+		// dataIcon.setAttribute("title", actionsArray[i].action);
+		// dataIcon.setAttribute("class", actionsArray[i].iconClass+" w3-button w3-white w3-border w3-border-light-green w3-round-large");
+		// dataIcon.setAttribute("id", arr[0]+"-"+actionsArray[i].iconClass);
+		// dataIcon.setAttribute("onClick", actionsArray[i].action+"Track('"+arr[0].toString()+"')"); 	
+		// tableData.appendChild(dataIcon);
+		// tableRow.appendChild(tableData);
 	}
 	showIntro();
 	return tableRow;

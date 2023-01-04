@@ -222,18 +222,19 @@ function loadAudio() {
 	wavesurfer.on('region-created', function(newRegion) {
 		var audioTracks = document.getElementById("audio-tracks").tBodies[0];
 		console.log(audioTracks.childNodes);
-		var tableRow = createAudioRow(new Array(newRegion.id, newRegion.start, newRegion.end));
-		audioTracks.appendChild(tableRow);
+		// var tableRow = createAudioRow(new Array(newRegion.id, newRegion.start, newRegion.end));
+		// audioTracks.appendChild(tableRow);
 		songId = newRegion.id;
 		console.log(newRegion);
-	 	showAndHideMergeOption();
+	 	// showAndHideMergeOption();
+		console.log('hi')
 		wavesurfer.play(newRegion.start, newRegion.end)
 	});
 	wavesurfer.on('region-update-end', function(newRegion) {
-		document.getElementById(newRegion.id+1).innerText = 
-			( 0 >= newRegion.start.toFixed(4) ? 0 : newRegion.start.toFixed(4));
-		document.getElementById(newRegion.id+2).innerText = 
-			( wavesurfer.getDuration() <= newRegion.end ? wavesurfer.getDuration().toFixed(4) : newRegion.end.toFixed(4));
+		// document.getElementById(newRegion.id+1).innerText = 
+		// 	( 0 >= newRegion.start.toFixed(4) ? 0 : newRegion.start.toFixed(4));
+		// document.getElementById(newRegion.id+2).innerText = 
+		// 	( wavesurfer.getDuration() <= newRegion.end ? wavesurfer.getDuration().toFixed(4) : newRegion.end.toFixed(4));
 		if(intro != undefined) {
 			intro.exit();
 		}

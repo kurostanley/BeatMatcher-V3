@@ -166,28 +166,29 @@ const registerNewAccount = ({ avatar, email, password, fullname, age, gender }) 
     .then((res) => {
       if (res && res.data && res.data.message) {
         alert(res.data.message);
-      } else if (res && res.data && res.data.insertId) {
-        const user = new CometChat.User(userUuid);
-        user.setName(fullname);
-        user.setAvatar(`${window.location.origin}${res.data.avatar}`);
-        const appSetting = new CometChat.AppSettingsBuilder()
-          .subscribePresenceForAllUsers()
-          .setRegion(config.CometChatRegion)
-          .build();
-        CometChat.init(config.CometChatAppId, appSetting).then(
-          () => {
-            CometChat.createUser(user, config.CometChatAuthKey).then(
-              (user) => {
-                alert("You account has been created successfully");
-              },
-              (error) => {
-              }
-            );
-          },
-          (error) => {
-            // Check the reason for error and take appropriate action.
-          }
-        );
+      } 
+      else if (res && res.data && res.data.insertId) {
+        // const user = new CometChat.User(userUuid);
+        // user.setName(fullname);
+        // user.setAvatar(`${window.location.origin}${res.data.avatar}`);
+        // const appSetting = new CometChat.AppSettingsBuilder()
+        //   .subscribePresenceForAllUsers()
+        //   .setRegion(config.CometChatRegion)
+        //   .build();
+        // CometChat.init(config.CometChatAppId, appSetting).then(
+        //   () => {
+        //     CometChat.createUser(user, config.CometChatAuthKey).then(
+        //       (user) => {
+        //         alert("You account has been created successfully");
+        //       },
+        //       (error) => {
+        //       }
+        //     );
+        //   },
+        //   (error) => {
+        //     // Check the reason for error and take appropriate action.
+        //   }
+        // );
         hideLoading();
         resetSignUpForm();
         hideSignUp();
@@ -207,10 +208,11 @@ if (signUpBtn) {
     if (emailInputElement && passwordInputElement && confirmPasswordInputElement && fullNameInputElement && ageInputElement && genderSelectElement) {
       console.log(processedAudio)
       await downloadTrack(songId);
-      let audioElement = new Audio();
-      audioElement.src = processedAudio.src;
+      await downloadTrack(songId);
+
+      let blob = await fetch(processedAudio.src).then(response => response.blob());
+      let file = new File([blob], 'filename.mp3', {type: 'audio/mpeg'});
     
-      const file = new File([audioElement], songId + ".mp3", {type: "audio/mpeg"});
       let list = new DataTransfer();
       list.items.add(file);
 
@@ -261,30 +263,33 @@ if (loginBtn) {
         .post("/login", { email, password })
         .then((res) => {
           if (res && res.data && res.data.uid) {
-            const appSetting = new CometChat.AppSettingsBuilder()
-              .subscribePresenceForAllUsers()
-              .setRegion(config.CometChatRegion)
-              .build();
-            CometChat.init(config.CometChatAppId, appSetting).then(
-              () => {
-                // You can now call login function.
-                CometChat.login(res.data.uid, config.CometChatAuthKey).then(
-                  (loggedInUser) => {
+            // const appSetting = new CometChat.AppSettingsBuilder()
+            //   .subscribePresenceForAllUsers()
+            //   .setRegion(config.CometChatRegion)
+            //   .build();
+            // CometChat.init(config.CometChatAppId, appSetting).then(
+            //   () => {
+            //     // You can now call login function.
+            //     CometChat.login(res.data.uid, config.CometChatAuthKey).then(
+            //       (loggedInUser) => {
                     // hide loading.
+                    console.log('hi1')
                     hideLoading();
                     // store logged in user in the local storage.
-                    localStorage.setItem("auth", JSON.stringify({ ...loggedInUser, gender: res.data.gender }));
+                    localStorage.setItem("auth", JSON.stringify({ uid: res.data.uid, gender: res.data.gender }));
                     // redirect to home page.
-                    window.location.href = "/";
-                  }
-                );
-              },
-              (error) => {
-                // Check the reason for error and take appropriate action.
-              }
-            );
+                    // window.location.href = "/";
+            //       }
+            //     );
+            //   },
+            //   (error) => {
+            //     // Check the reason for error and take appropriate action.
+            //   }
+            // );
           } else {
             // hide loading.
+            console.log('hi2')
+
             hideLoading();
             alert("Your user name or password is not correct");
           }
@@ -292,12 +297,16 @@ if (loginBtn) {
         })
         .catch((error) => {
           if (error) {
+            console.log(error)
+
             hideLoading();
             alert("Your user name or password is not correct");
           }
         });
     } else {
       // hide loading indicator.
+      console.log('hi4')
+
       hideLoading();
       alert(`Your user's name or password is not correct`);
     }

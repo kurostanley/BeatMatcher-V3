@@ -45,18 +45,18 @@ window.addEventListener("DOMContentLoaded", function () {
     let selectedContact = null;
     let notificationListenerID = authenticatedUser.uid;
 
-    const rejectCall = (status, sessionId) => {
-      CometChat.rejectCall(sessionId, status).then(
-        call => {
-          console.log("Call rejected successfully", call);
-          hideCallingDialog();
-          upcomingCall = null;
-        },
-        error => {
-          console.log("Call rejection failed with error:", error);
-        }
-      );
-    }
+    // const rejectCall = (status, sessionId) => {
+    //   CometChat.rejectCall(sessionId, status).then(
+    //     call => {
+    //       console.log("Call rejected successfully", call);
+    //       hideCallingDialog();
+    //       upcomingCall = null;
+    //     },
+    //     error => {
+    //       console.log("Call rejection failed with error:", error);
+    //     }
+    //   );
+    // }
 
     const showCallingDialog = () => {
       callingDialog.classList.remove("calling--hide");
@@ -66,101 +66,101 @@ window.addEventListener("DOMContentLoaded", function () {
       callingDialog.classList.add("calling--hide");
     };
 
-    const listenForCall = () => {
-      listenerID = uuid.v4();
-      CometChat.addCallListener(
-        listenerID,
-        new CometChat.CallListener({
-          onIncomingCallReceived(call) {
-            console.log("Incoming call:", call);
-            upcomingCall = call;
-            // Handle incoming call
-            showCallingDialog();
-          },
-          onOutgoingCallAccepted(call) {
-            console.log("Outgoing call accepted:", call);
-            // Outgoing Call Accepted
-            hideCallingDialog();
-          },
-          onOutgoingCallRejected(call) {
-            console.log("Outgoing call rejected:", call);
-            // Outgoing Call Rejected
-            hideCallingDialog();
-          },
-          onIncomingCallCancelled(call) {
-            console.log("Incoming call calcelled:", call);
-            hideCallingDialog();
-          }
-        })
-      );
-    };
+    // const listenForCall = () => {
+    //   listenerID = uuid.v4();
+    //   CometChat.addCallListener(
+    //     listenerID,
+    //     new CometChat.CallListener({
+    //       onIncomingCallReceived(call) {
+    //         console.log("Incoming call:", call);
+    //         upcomingCall = call;
+    //         // Handle incoming call
+    //         showCallingDialog();
+    //       },
+    //       onOutgoingCallAccepted(call) {
+    //         console.log("Outgoing call accepted:", call);
+    //         // Outgoing Call Accepted
+    //         hideCallingDialog();
+    //       },
+    //       onOutgoingCallRejected(call) {
+    //         console.log("Outgoing call rejected:", call);
+    //         // Outgoing Call Rejected
+    //         hideCallingDialog();
+    //       },
+    //       onIncomingCallCancelled(call) {
+    //         console.log("Incoming call calcelled:", call);
+    //         hideCallingDialog();
+    //       }
+    //     })
+    //   );
+    // };
 
-    const startCall = (call) => {
-      callScreen.classList.remove('bottom-stack');
-      callScreen.classList.add('on-stack');
-      const sessionId = call.sessionId;
-      const callType = call.type;
-      const callSettings = new CometChat.CallSettingsBuilder()
-        .setSessionID(sessionId)
-        .enableDefaultLayout(true)
-        .setIsAudioOnlyCall(callType == 'audio' ? true : false)
-        .build();
-      CometChat.startCall(
-        callSettings,
-        document.getElementById("callScreen"),
-        new CometChat.OngoingCallListener({
-          onUserJoined: user => {
-            /* Notification received here if another user joins the call. */
-            console.log("User joined call:", user);
-            /* this method can be use to display message or perform any actions if someone joining the call */
-          },
-          onUserLeft: user => {
-            /* Notification received here if another user left the call. */
-            console.log("User left call:", user);
-            /* this method can be use to display message or perform any actions if someone leaving the call */
-          },
-          onUserListUpdated: userList => {
-            console.log("user list:", userList);
-          },
-          onCallEnded: call => {
-            /* Notification received here if current ongoing call is ended. */
-            console.log("Call ended:", call);
-            /* hiding/closing the call screen can be done here. */
-            callScreen.classList.add('bottom-stack');
-            callScreen.classList.remove('on-stack');
-            const status = CometChat.CALL_STATUS.CANCELLED;
-            rejectCall(status, call.sessionId);
-          },
-          onError: error => {
-            console.log("Error :", error);
-            /* hiding/closing the call screen can be done here. */
-          },
-          onMediaDeviceListUpdated: deviceList => {
-            console.log("Device List:", deviceList);
-          },
-        })
-      );
-    };
+    // const startCall = (call) => {
+    //   callScreen.classList.remove('bottom-stack');
+    //   callScreen.classList.add('on-stack');
+    //   const sessionId = call.sessionId;
+    //   const callType = call.type;
+    //   const callSettings = new CometChat.CallSettingsBuilder()
+    //     .setSessionID(sessionId)
+    //     .enableDefaultLayout(true)
+    //     .setIsAudioOnlyCall(callType == 'audio' ? true : false)
+    //     .build();
+    //   CometChat.startCall(
+    //     callSettings,
+    //     document.getElementById("callScreen"),
+    //     new CometChat.OngoingCallListener({
+    //       onUserJoined: user => {
+    //         /* Notification received here if another user joins the call. */
+    //         console.log("User joined call:", user);
+    //         /* this method can be use to display message or perform any actions if someone joining the call */
+    //       },
+    //       onUserLeft: user => {
+    //         /* Notification received here if another user left the call. */
+    //         console.log("User left call:", user);
+    //         /* this method can be use to display message or perform any actions if someone leaving the call */
+    //       },
+    //       onUserListUpdated: userList => {
+    //         console.log("user list:", userList);
+    //       },
+    //       onCallEnded: call => {
+    //         /* Notification received here if current ongoing call is ended. */
+    //         console.log("Call ended:", call);
+    //         /* hiding/closing the call screen can be done here. */
+    //         callScreen.classList.add('bottom-stack');
+    //         callScreen.classList.remove('on-stack');
+    //         const status = CometChat.CALL_STATUS.CANCELLED;
+    //         rejectCall(status, call.sessionId);
+    //       },
+    //       onError: error => {
+    //         console.log("Error :", error);
+    //         /* hiding/closing the call screen can be done here. */
+    //       },
+    //       onMediaDeviceListUpdated: deviceList => {
+    //         console.log("Device List:", deviceList);
+    //       },
+    //     })
+    //   );
+    // };
 
-    const initCall = (inputCallType) => {
-      if (selectedContact && selectedContact.uid) {
-        const callType = inputCallType;
-        const receiverType = CometChat.RECEIVER_TYPE.USER;
+    // const initCall = (inputCallType) => {
+    //   if (selectedContact && selectedContact.uid) {
+    //     const callType = inputCallType;
+    //     const receiverType = CometChat.RECEIVER_TYPE.USER;
 
-        const call = new CometChat.Call(selectedContact.uid, callType, receiverType);
+    //     const call = new CometChat.Call(selectedContact.uid, callType, receiverType);
 
-        CometChat.initiateCall(call).then(
-          outGoingCall => {
-            console.log("Call initiated successfully:", outGoingCall);
-            // perform action on success. Like show your calling screen.
-            startCall(call);
-          },
-          error => {
-            console.log("Call initialization failed with exception:", error);
-          }
-        );
-      }
-    };
+    //     CometChat.initiateCall(call).then(
+    //       outGoingCall => {
+    //         console.log("Call initiated successfully:", outGoingCall);
+    //         // perform action on success. Like show your calling screen.
+    //         startCall(call);
+    //       },
+    //       error => {
+    //         console.log("Call initialization failed with exception:", error);
+    //       }
+    //     );
+    //   }
+    // };
 
     const scrollToBottom = () => {
       if (messageBottom && messageBottom) {
@@ -168,56 +168,56 @@ window.addEventListener("DOMContentLoaded", function () {
       }
     }
 
-    const sendNotification = ({ message, type, receiverId }) => {
-      const receiverID = receiverId;
-      const customType = type;
-      const receiverType = CometChat.RECEIVER_TYPE.USER;
-      const customData = {
-        message
-      };
-      const customMessage = new CometChat.CustomMessage(
-        receiverID,
-        receiverType,
-        customType,
-        customData
-      );
+    // const sendNotification = ({ message, type, receiverId }) => {
+    //   const receiverID = receiverId;
+    //   const customType = type;
+    //   const receiverType = CometChat.RECEIVER_TYPE.USER;
+    //   const customData = {
+    //     message
+    //   };
+    //   const customMessage = new CometChat.CustomMessage(
+    //     receiverID,
+    //     receiverType,
+    //     customType,
+    //     customData
+    //   );
 
-      CometChat.sendCustomMessage(customMessage).then(
-        message => {
-        },
-        error => {
-        }
-      );
-    };
+    //   CometChat.sendCustomMessage(customMessage).then(
+    //     message => {
+    //     },
+    //     error => {
+    //     }
+    //   );
+    // };
 
-    const sendMessage = (inputMessage) => {
-      if (inputMessage) {
-        // call cometchat service to send the message.
-        const message = new CometChat.TextMessage(
-          selectedContact.uid,
-          inputMessage,
-          CometChat.RECEIVER_TYPE.USER
-        );
-        CometChat.sendMessage(message).then(
-          msg => {
-            // append new message on the UI.
-            const sentMessage = {
-              text: inputMessage,
-              sender: {
-                avatar: authenticatedUser.avatar
-              },
-              isRight: true
-            }
-            renderSingleMessage(sentMessage);
-            // scroll to bottom.
-            scrollToBottom();
-          },
-          error => {
-            alert('Cannot send you message, please try later');
-          }
-        );
-      }
-    };
+    // const sendMessage = (inputMessage) => {
+    //   if (inputMessage) {
+    //     // call cometchat service to send the message.
+    //     const message = new CometChat.TextMessage(
+    //       selectedContact.uid,
+    //       inputMessage,
+    //       CometChat.RECEIVER_TYPE.USER
+    //     );
+    //     CometChat.sendMessage(message).then(
+    //       msg => {
+    //         // append new message on the UI.
+    //         const sentMessage = {
+    //           text: inputMessage,
+    //           sender: {
+    //             avatar: authenticatedUser.avatar
+    //           },
+    //           isRight: true
+    //         }
+    //         renderSingleMessage(sentMessage);
+    //         // scroll to bottom.
+    //         scrollToBottom();
+    //       },
+    //       error => {
+    //         alert('Cannot send you message, please try later');
+    //       }
+    //     );
+    //   }
+    // };
 
     const isRight = (message) => {
       if (message.isRight !== null && message.isRight !== undefined) {
@@ -264,58 +264,58 @@ window.addEventListener("DOMContentLoaded", function () {
       }
     };
 
-    const loadMessages = () => {
-      const limit = 50;
-      const messageRequestBuilder = new CometChat.MessagesRequestBuilder()
-        .setCategories(["message"])
-        .setTypes(["text"])
-        .setLimit(limit)
-      messageRequestBuilder.setUID(selectedContact.uid);
+    // const loadMessages = () => {
+    //   const limit = 50;
+    //   const messageRequestBuilder = new CometChat.MessagesRequestBuilder()
+    //     .setCategories(["message"])
+    //     .setTypes(["text"])
+    //     .setLimit(limit)
+    //   messageRequestBuilder.setUID(selectedContact.uid);
 
-      const messagesRequest = messageRequestBuilder.build();
+    //   const messagesRequest = messageRequestBuilder.build();
 
-      messagesRequest
-        .fetchPrevious()
-        .then((messages) => {
-          if (messages && messages.length !== 0) {
-            renderMessages(messages);
-          }
-        })
-        .catch((error) => { });
-    };
+    //   messagesRequest
+    //     .fetchPrevious()
+    //     .then((messages) => {
+    //       if (messages && messages.length !== 0) {
+    //         renderMessages(messages);
+    //       }
+    //     })
+    //     .catch((error) => { });
+    // };
 
     const isCurrentUser = (selectedContact, selectedUid) => {
       return selectedContact && selectedUid && selectedContact.uid && selectedContact.uid === selectedUid;
     };
 
-    const listenForNotifications = () => {
-      CometChat.addMessageListener(
-        notificationListenerID,
-        new CometChat.MessageListener({
-          onTextMessageReceived: (message) => {
-            if (message && (!message.category || message.category !== 'call')) {
-              const senderUid = message.sender.uid;
-              if (selectedContact && selectedContact.uid === senderUid) {
-                renderSingleMessage(message);
-              } else {
-                toastr.info(`There is new message from ${message.sender.name}`);
-              }
-            }
-          },
-          onCustomMessageReceived: customMessage => {
-            console.log("Custom message received successfully", customMessage);
-            // Handle custom message
-            if (!selectedContact || (customMessage && customMessage.sender && customMessage.sender.uid && customMessage.sender.uid !== selectedContact.uid && customMessage.data && customMessage.data.customData && customMessage.data.customData.message)) {
-              // Display an info toast with no title
-              toastr.info(customMessage.data.customData.message);
-              if (customMessage && customMessage.type && customMessage.type === 'match') {
-                loadFriends();
-              }
-            }
-          }
-        })
-      );
-    };
+    // const listenForNotifications = () => {
+    //   CometChat.addMessageListener(
+    //     notificationListenerID,
+    //     new CometChat.MessageListener({
+    //       onTextMessageReceived: (message) => {
+    //         if (message && (!message.category || message.category !== 'call')) {
+    //           const senderUid = message.sender.uid;
+    //           if (selectedContact && selectedContact.uid === senderUid) {
+    //             renderSingleMessage(message);
+    //           } else {
+    //             toastr.info(`There is new message from ${message.sender.name}`);
+    //           }
+    //         }
+    //       },
+    //       onCustomMessageReceived: customMessage => {
+    //         console.log("Custom message received successfully", customMessage);
+    //         // Handle custom message
+    //         if (!selectedContact || (customMessage && customMessage.sender && customMessage.sender.uid && customMessage.sender.uid !== selectedContact.uid && customMessage.data && customMessage.data.customData && customMessage.data.customData.message)) {
+    //           // Display an info toast with no title
+    //           toastr.info(customMessage.data.customData.message);
+    //           if (customMessage && customMessage.type && customMessage.type === 'match') {
+    //             loadFriends();
+    //           }
+    //         }
+    //       }
+    //     })
+    //   );
+    // };
 
     window.openChatBox = (selectedUid, name, avatar) => {
       if (selectedUid && name && avatar && !isCurrentUser(selectedContact, selectedUid)) {
@@ -345,39 +345,39 @@ window.addEventListener("DOMContentLoaded", function () {
       }
     };
 
-    const loadFriends = () => {
-      const appSetting = new CometChat.AppSettingsBuilder()
-        .subscribePresenceForAllUsers()
-        .setRegion(config.CometChatRegion)
-        .build();
-      CometChat.init(config.CometChatAppId, appSetting).then(
-        () => {
-          // You can now call login function.
-          const limit = 30;
-          const usersRequest = new CometChat.UsersRequestBuilder()
-            .setLimit(limit)
-            .friendsOnly(true)
-            .build();;
-          usersRequest.fetchNext().then(
-            userList => {
-              if (userList && userList.length !== 0) {
-                mainLeftEmpty.classList.add('hide');
-                mainLeftMessagesContainer.innerHTML = '';
-                renderFriends(userList);
-              } else {
-                mainLeftEmpty.classList.remove('hide');
-                mainLeftEmpty.innerHTML = 'You do not have any contact';
-              }
-            },
-            error => {
-            }
-          );
-        },
-        (error) => {
-          // Check the reason for error and take appropriate action.
-        }
-      );
-    };
+    // const loadFriends = () => {
+    //   const appSetting = new CometChat.AppSettingsBuilder()
+    //     .subscribePresenceForAllUsers()
+    //     .setRegion(config.CometChatRegion)
+    //     .build();
+    //   CometChat.init(config.CometChatAppId, appSetting).then(
+    //     () => {
+    //       // You can now call login function.
+    //       const limit = 30;
+    //       const usersRequest = new CometChat.UsersRequestBuilder()
+    //         .setLimit(limit)
+    //         .friendsOnly(true)
+    //         .build();;
+    //       usersRequest.fetchNext().then(
+    //         userList => {
+    //           if (userList && userList.length !== 0) {
+    //             mainLeftEmpty.classList.add('hide');
+    //             mainLeftMessagesContainer.innerHTML = '';
+    //             renderFriends(userList);
+    //           } else {
+    //             mainLeftEmpty.classList.remove('hide');
+    //             mainLeftEmpty.innerHTML = 'You do not have any contact';
+    //           }
+    //         },
+    //         error => {
+    //         }
+    //       );
+    //     },
+    //     (error) => {
+    //       // Check the reason for error and take appropriate action.
+    //     }
+    //   );
+    // };
 
     const getCurrentCard = () => {
       const cards = document.getElementsByClassName("main__card-item");
@@ -419,6 +419,8 @@ window.addEventListener("DOMContentLoaded", function () {
     };
 
     const createMatchRequest = (matchRequestTo, matchRequestReceiver) => {
+      console.log(authenticatedUser.name );
+
       if (authenticatedUser && authenticatedUser.uid && authenticatedUser.name && matchRequestTo && matchRequestReceiver) {
         axios.post('/requests/create', {
           matchRequestFrom: authenticatedUser.uid,
@@ -427,7 +429,7 @@ window.addEventListener("DOMContentLoaded", function () {
           matchRequestReceiver
         }).then(res => {
           if (res && res.data && res.data.match_request_status && res.data.match_request_status === 1) {
-            addFriend(authenticatedUser.uid, matchRequestTo, matchRequestReceiver);
+            // addFriend(authenticatedUser.uid, matchRequestTo, matchRequestReceiver);
           }
         }).catch(error => { });
       }
@@ -540,6 +542,7 @@ window.addEventListener("DOMContentLoaded", function () {
         .then((res) => {
           if (res && res.data && res.data.length !== 0) {
             showMainCard();
+            console.log(res.data)
             renderCardList(res.data);
           }
         })
@@ -547,29 +550,29 @@ window.addEventListener("DOMContentLoaded", function () {
         });
     };
 
-    const addFriend = (matchRequestFrom, matchRequestTo, matchRequestReceiver) => {
-      if (matchRequestFrom && matchRequestTo) {
-        const url = `https://${config.CometChatAppId}.api-${config.CometChatRegion}.cometchat.io/v3.0/users/${matchRequestTo}/friends`;
-        axios.post(url, { accepted: [matchRequestFrom] }, {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            appId: `${config.CometChatAppId}`,
-            apiKey: `${config.CometChatAPIKey}`,
-          }
-        }).then(res => {
-          const notificationMessage = {
-            message: `Congratulation! ${authenticatedUser.name} and ${matchRequestReceiver} have been matched`,
-            type: 'match',
-            receiverId: matchRequestTo
-          };
-          toastr.info(notificationMessage.message);
-          loadFriends();
-          sendNotification(notificationMessage);
-        }).catch(error => {
-        });
-      }
-    };
+    // const addFriend = (matchRequestFrom, matchRequestTo, matchRequestReceiver) => {
+    //   if (matchRequestFrom && matchRequestTo) {
+    //     const url = `https://${config.CometChatAppId}.api-${config.CometChatRegion}.cometchat.io/v3.0/users/${matchRequestTo}/friends`;
+    //     axios.post(url, { accepted: [matchRequestFrom] }, {
+    //       headers: {
+    //         Accept: "application/json",
+    //         "Content-Type": "application/json",
+    //         appId: `${config.CometChatAppId}`,
+    //         apiKey: `${config.CometChatAPIKey}`,
+    //       }
+    //     }).then(res => {
+    //       const notificationMessage = {
+    //         message: `Congratulation! ${authenticatedUser.name} and ${matchRequestReceiver} have been matched`,
+    //         type: 'match',
+    //         receiverId: matchRequestTo
+    //       };
+    //       toastr.info(notificationMessage.message);
+    //       loadFriends();
+    //       sendNotification(notificationMessage);
+    //     }).catch(error => {
+    //     });
+    //   }
+    // };
 
 
     // add event for logout
@@ -578,13 +581,13 @@ window.addEventListener("DOMContentLoaded", function () {
         const isLeaved = confirm("Do you want to log out?");
         if (isLeaved) {
           // logout from cometchat and then clear storage.
-          CometChat.logout().then((response) => {
+          // CometChat.logout().then((response) => {
             // User successfully logged out.
             // Perform any clean up if required.
             localStorage.removeItem("auth");
             // redirect to login page.
             window.location.href = "/login.html";
-          });
+          // });
         }
       });
     }
@@ -622,8 +625,8 @@ window.addEventListener("DOMContentLoaded", function () {
       chatBoxClose.addEventListener('click', function () {
         messageContainer.innerHTML = '';
         chatBox.classList.add("hide");
-        CometChat.removeMessageListener(selectedContact.uid);
-        CometChat.removeCallListener(listenerID);
+        // CometChat.removeMessageListener(selectedContact.uid);
+        // CometChat.removeCallListener(listenerID);
         selectedContact = null;
         upcomingCall = null;
         listenerID = null;
@@ -640,45 +643,45 @@ window.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    if (audioCallBtn) {
-      audioCallBtn.addEventListener('click', function () {
-        initCall(CometChat.CALL_TYPE.AUDIO);
-      });
-    }
+    // if (audioCallBtn) {
+    //   audioCallBtn.addEventListener('click', function () {
+    //     initCall(CometChat.CALL_TYPE.AUDIO);
+    //   });
+    // }
 
-    if (videoCallBtn) {
-      videoCallBtn.addEventListener('click', function () {
-        initCall(CometChat.CALL_TYPE.VIDEO);
-      });
-    }
+    // if (videoCallBtn) {
+    //   videoCallBtn.addEventListener('click', function () {
+    //     initCall(CometChat.CALL_TYPE.VIDEO);
+    //   });
+    // }
 
-    if (acceptCallBtn) {
-      acceptCallBtn.addEventListener('click', function () {
-        CometChat.acceptCall(upcomingCall.sessionId).then(
-          call => {
-            console.log("Call accepted successfully:", call);
-            // start the call using the startCall() method
-            hideCallingDialog();
-            startCall(upcomingCall);
-          },
-          error => {
-            console.log("Call acceptance failed with error", error);
-            // handle exception
-          }
-        );
-      });
-    }
+    // if (acceptCallBtn) {
+    //   acceptCallBtn.addEventListener('click', function () {
+    //     CometChat.acceptCall(upcomingCall.sessionId).then(
+    //       call => {
+    //         console.log("Call accepted successfully:", call);
+    //         // start the call using the startCall() method
+    //         hideCallingDialog();
+    //         startCall(upcomingCall);
+    //       },
+    //       error => {
+    //         console.log("Call acceptance failed with error", error);
+    //         // handle exception
+    //       }
+    //     );
+    //   });
+    // }
 
-    if (rejectCallBtn) {
-      rejectCallBtn.addEventListener('click', function () {
-        const status = CometChat.CALL_STATUS.REJECTED;
-        rejectCall(status, upcomingCall.sessionId);
-      });
-    }
+    // if (rejectCallBtn) {
+    //   rejectCallBtn.addEventListener('click', function () {
+    //     const status = CometChat.CALL_STATUS.REJECTED;
+    //     rejectCall(status, upcomingCall.sessionId);
+    //   });
+    // }
     showHeaderInformation();
     loadRecommendedUsers();
-    loadFriends();
-    listenForNotifications();
+    //loadFriends();
+    //listenForNotifications();
 
   } else {
     // redirect user to the login page.
