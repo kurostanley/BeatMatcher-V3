@@ -273,12 +273,11 @@ if (loginBtn) {
             //     CometChat.login(res.data.uid, config.CometChatAuthKey).then(
             //       (loggedInUser) => {
                     // hide loading.
-                    console.log('hi1')
                     hideLoading();
                     // store logged in user in the local storage.
-                    localStorage.setItem("auth", JSON.stringify({ uid: res.data.uid, gender: res.data.gender }));
+                    localStorage.setItem("auth", JSON.stringify({ uid: res.data.uid, name: res.data.name, gender: res.data.gender }));
                     // redirect to home page.
-                    // window.location.href = "/";
+                     window.location.href = "/";
             //       }
             //     );
             //   },
@@ -288,8 +287,6 @@ if (loginBtn) {
             // );
           } else {
             // hide loading.
-            console.log('hi2')
-
             hideLoading();
             alert("Your user name or password is not correct");
           }

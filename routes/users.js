@@ -54,6 +54,16 @@ module.exports = function ({ app, dbConn, upload, constants }) {
     return users;
   }
 
+  const transformMatchedUsers = (data) => {
+    const user = {   
+      name: data.user_full_name,
+      uid: data.user_cometchat_uid,
+      avatar: data.user_avatar,
+    }
+    return user
+  }
+
+
   app.post('/users/recommend', (req, res) => {
     const { gender, ccUid } = req.body;
     if (gender && ccUid) {
@@ -70,4 +80,46 @@ module.exports = function ({ app, dbConn, upload, constants }) {
       res.status(200).jsonp({ message: "Please provide cometchat uid and user's gender" });
     }
   });
+
+  app.post('/users/matches', (req, res) => {
+    const {ccUid} = req.body;
+    if (ccUid) {
+      const sql = "SELECT * FROM match_request WHERE (match_request_from = ? OR  match_request_to = ? )AND match_request_status = ? ";
+      dbConn.query(sql, [ccUid, ccUid, constants.matchRequestStatus.accepted], function (err, result) {
+        if (err) {
+          res.status(200).jsonp({ message: 'Cannot get your match users, please try again' });
+        } else {
+          let friendList = [];
+          for(let match of result){
+            if(match.match_request_from === ccUid){
+              friendList.push(match.match_request_to)
+            }
+            else{
+              friendList.push(match.match_request_from)
+            }
+          }
+          res.status(200).jsonp(friendList);
+        }
+      });
+    } else {
+      res.status(200).jsonp({ message: "Please provide cometchat uid and user's gender" });
+    }
+  })
+
+  app.post('/users/findUser', (req, res) => {
+    const {ccUid} = req.body;
+    if (ccUid) {
+      const sql = "SELECT * FROM user_account  WHERE user_cometchat_uid = ?";
+      dbConn.query(sql, [ccUid], function (err, result) {
+        if (err) {
+          res.status(200).jsonp({ message: 'Cannot get your match users, please try again' });
+        } else {
+          const recommendedUsers = transformMatchedUsers(result[0]);
+          res.status(200).jsonp(recommendedUsers);
+        }
+      });
+    } else {
+      res.status(200).jsonp({ message: "Please provide cometchat uid and user's gender" });
+    } 
+  })
 };

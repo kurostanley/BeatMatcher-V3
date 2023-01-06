@@ -218,6 +218,34 @@ window.addEventListener("DOMContentLoaded", function () {
     //     );
     //   }
     // };
+    const sendMessage = (inputMessage) => {
+        if (inputMessage) {
+          // call cometchat service to send the message.
+          const message = {
+            senderId:authenticatedUser.uid,
+            recipentId: selectedContact.uid,
+            message:inputMessage,
+          };
+          axios
+            .post('/users/sendMessage',message)
+            .then((res) => {  
+              // append new message on the UI.
+              const sentMessage = {
+                text: inputMessage,
+                sender: {
+                  avatar: authenticatedUser.avatar
+                },
+                isRight: true
+              }
+              renderSingleMessage(sentMessage);
+              // scroll to bottom.
+              scrollToBottom();
+            });
+
+          
+        }
+    };
+
 
     const isRight = (message) => {
       if (message.isRight !== null && message.isRight !== undefined) {
@@ -253,6 +281,11 @@ window.addEventListener("DOMContentLoaded", function () {
     };
 
     const renderMessages = (messages) => {
+      messages.sort(function(a,b){
+        // Turn your strings into dates, and then subtract them
+        // to get a value that is either negative, positive, or zero.
+        return new Date(a.date) - new Date(b.date);
+      });
       if (messages && messages.length !== 0) {
         messages.forEach(message => {
           if (message) {
@@ -283,6 +316,61 @@ window.addEventListener("DOMContentLoaded", function () {
     //     })
     //     .catch((error) => { });
     // };
+
+    const loadMessages = () => {
+      const limit = 50;
+      const transferMessageData = [];
+      // Load user's message
+      axios
+        .post('/users/getMessage', {            
+          senderId:authenticatedUser.uid,
+          recipentId: selectedContact.uid
+        })
+        .then((messages) => {
+          if (messages.data && messages.data.length !== 0) {
+            messages.data.forEach( (message) => {
+              const messageData = {          
+                sender: {
+                  avatar: authenticatedUser.avatar
+                },
+                text:message.message,
+                isRight: true,
+                date: message.created_at
+              }
+              transferMessageData.push(messageData)
+            })
+            //renderMessages(transferMessageData);
+          }
+        })
+        .catch((error) => { });
+      
+      // Load selectedContact's message
+      axios
+        .post('/users/getMessage', {            
+          senderId:selectedContact.uid,
+          recipentId: authenticatedUser.uid
+        })
+        .then((messages) => {
+          if (messages.data && messages.data.length !== 0) {
+            messages.data.forEach( (message) => {
+              const messageData = {          
+                sender: {
+                  avatar: selectedContact.avatar
+                },
+                text:message.message,
+                isRight: false,
+                date: message.created_at
+              }
+              transferMessageData.push(messageData)
+            })
+            console.log(transferMessageData)
+            renderMessages(transferMessageData);
+          }
+        })
+        .catch((error) => { });
+    };
+
+
 
     const isCurrentUser = (selectedContact, selectedUid) => {
       return selectedContact && selectedUid && selectedContact.uid && selectedContact.uid === selectedUid;
@@ -325,59 +413,92 @@ window.addEventListener("DOMContentLoaded", function () {
         chatBoxUserAvatar.src = avatar;
         messageContainer.innerHTML = '';
         loadMessages();
-        listenForCall();
+        //listenForCall();
       }
     }
 
     const renderFriends = (userList) => {
+      console.log(userList)
       if (userList && userList.length !== 0) {
         userList.forEach(user => {
           if (user) {
-            mainLeftMessagesContainer.innerHTML += `<div class="main__left-message" onclick="openChatBox('${user.uid}', '${user.name}', '${user.avatar}')">
+            mainLeftMessagesContainer.innerHTML += `<div class="main__left-message" onclick="openChatBox('${user.data.uid}', '${user.data.name}', '${user.data.avatar}')">
               <img
-                src="${user.avatar}"
-                alt="${user.name}"
+                src="${user.data.avatar}"
+                alt="${user.data.name}"
               />
-              <span>${user.name}</span>
+              <span>${user.data.name}</span>
             </div>`;
           }
         });
       }
     };
 
-    // const loadFriends = () => {
-    //   const appSetting = new CometChat.AppSettingsBuilder()
-    //     .subscribePresenceForAllUsers()
-    //     .setRegion(config.CometChatRegion)
-    //     .build();
-    //   CometChat.init(config.CometChatAppId, appSetting).then(
-    //     () => {
-    //       // You can now call login function.
-    //       const limit = 30;
-    //       const usersRequest = new CometChat.UsersRequestBuilder()
-    //         .setLimit(limit)
-    //         .friendsOnly(true)
-    //         .build();;
-    //       usersRequest.fetchNext().then(
-    //         userList => {
-    //           if (userList && userList.length !== 0) {
-    //             mainLeftEmpty.classList.add('hide');
-    //             mainLeftMessagesContainer.innerHTML = '';
-    //             renderFriends(userList);
-    //           } else {
-    //             mainLeftEmpty.classList.remove('hide');
-    //             mainLeftEmpty.innerHTML = 'You do not have any contact';
-    //           }
-    //         },
-    //         error => {
-    //         }
-    //       );
-    //     },
-    //     (error) => {
-    //       // Check the reason for error and take appropriate action.
-    //     }
-    //   );
-    // };
+    const loadFriends = () => {
+      axios
+        .post("/users/matches", {
+          ccUid: authenticatedUser.uid,
+        })
+        .then(async(res) => {
+          console.log(res)
+          if (res && res.length !== 0) {
+            const userList = await getMatcherData(res.data);
+            console.log(userList);
+            mainLeftEmpty.classList.add('hide');
+            mainLeftMessagesContainer.innerHTML = '';
+            renderFriends(userList);
+          } else {
+            mainLeftEmpty.classList.remove('hide');
+            mainLeftEmpty.innerHTML = 'You do not have any contact';
+          }
+        })
+
+      // const appSetting = new CometChat.AppSettingsBuilder()
+      //   .subscribePresenceForAllUsers()
+      //   .setRegion(config.CometChatRegion)
+      //   .build();
+      // CometChat.init(config.CometChatAppId, appSetting).then(
+      //   () => {
+      //     // You can now call login function.
+      //     const limit = 30;
+      //     const usersRequest = new CometChat.UsersRequestBuilder()
+      //       .setLimit(limit)
+      //       .friendsOnly(true)
+      //       .build();;
+      //     usersRequest.fetchNext().then(
+      //       userList => {
+      //         if (userList && userList.length !== 0) {
+      //           mainLeftEmpty.classList.add('hide');
+      //           mainLeftMessagesContainer.innerHTML = '';
+      //           renderFriends(userList);
+      //         } else {
+      //           mainLeftEmpty.classList.remove('hide');
+      //           mainLeftEmpty.innerHTML = 'You do not have any contact';
+      //         }
+      //       },
+      //       error => {
+      //       }
+      //     );
+      //   },
+      //   (error) => {
+      //     // Check the reason for error and take appropriate action.
+      //   }
+      // );
+    };
+
+    const getMatcherData = async(uids) => {
+          let friendListDetail = [];
+          for(let uid of uids){
+            await axios
+              .post('/users/findUser', {
+                ccUid: uid,
+              })
+              .then((res) => {
+                friendListDetail.push(res)
+              })
+          }
+          return friendListDetail;
+    }
 
     const getCurrentCard = () => {
       const cards = document.getElementsByClassName("main__card-item");
@@ -608,6 +729,7 @@ window.addEventListener("DOMContentLoaded", function () {
     if (likeBtn) {
       likeBtn.addEventListener('click', function () {
         const currentCard = getCurrentCard();
+        loadFriends();
         if (currentCard) {
           swipeRight(currentCard);
           playMusic();
@@ -680,7 +802,7 @@ window.addEventListener("DOMContentLoaded", function () {
     // }
     showHeaderInformation();
     loadRecommendedUsers();
-    //loadFriends();
+    loadFriends();
     //listenForNotifications();
 
   } else {
