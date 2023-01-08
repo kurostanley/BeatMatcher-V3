@@ -39,24 +39,39 @@ window.addEventListener("DOMContentLoaded", function () {
     const audioCallBtn = document.getElementById("audio-call");
     const videoCallBtn = document.getElementById("video-call");
     const callScreen = document.getElementById("callScreen");
+    
+    const socket = io("http://localhost:3000");
+
+
+    // function sendMessage(){
+    //   socket.emit('message')
+    // }
 
     let listenerID = null;
     let upcomingCall = null;
     let selectedContact = null;
+    let selectedContactAvatar = null; 
     let notificationListenerID = authenticatedUser.uid;
 
-    // const rejectCall = (status, sessionId) => {
-    //   CometChat.rejectCall(sessionId, status).then(
-    //     call => {
-    //       console.log("Call rejected successfully", call);
-    //       hideCallingDialog();
-    //       upcomingCall = null;
-    //     },
-    //     error => {
-    //       console.log("Call rejection failed with error:", error);
-    //     }
-    //   );
-    // }
+    socket.emit("addUser", notificationListenerID)
+    socket.on("getUsers", (users) => {
+      console.log(users)
+    })
+
+    socket.on("getMessage", (data) => {
+      console.log(data)
+      if(selectedContact.uid === data.senderId){
+        renderSingleMessage({
+          sender: {
+            avatar: "../img/logo.svg"
+          },
+          text: data.text,
+          isRight: false
+        })
+        scrollToBottom();
+      }
+    })
+
 
     const showCallingDialog = () => {
       callingDialog.classList.remove("calling--hide");
@@ -66,101 +81,7 @@ window.addEventListener("DOMContentLoaded", function () {
       callingDialog.classList.add("calling--hide");
     };
 
-    // const listenForCall = () => {
-    //   listenerID = uuid.v4();
-    //   CometChat.addCallListener(
-    //     listenerID,
-    //     new CometChat.CallListener({
-    //       onIncomingCallReceived(call) {
-    //         console.log("Incoming call:", call);
-    //         upcomingCall = call;
-    //         // Handle incoming call
-    //         showCallingDialog();
-    //       },
-    //       onOutgoingCallAccepted(call) {
-    //         console.log("Outgoing call accepted:", call);
-    //         // Outgoing Call Accepted
-    //         hideCallingDialog();
-    //       },
-    //       onOutgoingCallRejected(call) {
-    //         console.log("Outgoing call rejected:", call);
-    //         // Outgoing Call Rejected
-    //         hideCallingDialog();
-    //       },
-    //       onIncomingCallCancelled(call) {
-    //         console.log("Incoming call calcelled:", call);
-    //         hideCallingDialog();
-    //       }
-    //     })
-    //   );
-    // };
 
-    // const startCall = (call) => {
-    //   callScreen.classList.remove('bottom-stack');
-    //   callScreen.classList.add('on-stack');
-    //   const sessionId = call.sessionId;
-    //   const callType = call.type;
-    //   const callSettings = new CometChat.CallSettingsBuilder()
-    //     .setSessionID(sessionId)
-    //     .enableDefaultLayout(true)
-    //     .setIsAudioOnlyCall(callType == 'audio' ? true : false)
-    //     .build();
-    //   CometChat.startCall(
-    //     callSettings,
-    //     document.getElementById("callScreen"),
-    //     new CometChat.OngoingCallListener({
-    //       onUserJoined: user => {
-    //         /* Notification received here if another user joins the call. */
-    //         console.log("User joined call:", user);
-    //         /* this method can be use to display message or perform any actions if someone joining the call */
-    //       },
-    //       onUserLeft: user => {
-    //         /* Notification received here if another user left the call. */
-    //         console.log("User left call:", user);
-    //         /* this method can be use to display message or perform any actions if someone leaving the call */
-    //       },
-    //       onUserListUpdated: userList => {
-    //         console.log("user list:", userList);
-    //       },
-    //       onCallEnded: call => {
-    //         /* Notification received here if current ongoing call is ended. */
-    //         console.log("Call ended:", call);
-    //         /* hiding/closing the call screen can be done here. */
-    //         callScreen.classList.add('bottom-stack');
-    //         callScreen.classList.remove('on-stack');
-    //         const status = CometChat.CALL_STATUS.CANCELLED;
-    //         rejectCall(status, call.sessionId);
-    //       },
-    //       onError: error => {
-    //         console.log("Error :", error);
-    //         /* hiding/closing the call screen can be done here. */
-    //       },
-    //       onMediaDeviceListUpdated: deviceList => {
-    //         console.log("Device List:", deviceList);
-    //       },
-    //     })
-    //   );
-    // };
-
-    // const initCall = (inputCallType) => {
-    //   if (selectedContact && selectedContact.uid) {
-    //     const callType = inputCallType;
-    //     const receiverType = CometChat.RECEIVER_TYPE.USER;
-
-    //     const call = new CometChat.Call(selectedContact.uid, callType, receiverType);
-
-    //     CometChat.initiateCall(call).then(
-    //       outGoingCall => {
-    //         console.log("Call initiated successfully:", outGoingCall);
-    //         // perform action on success. Like show your calling screen.
-    //         startCall(call);
-    //       },
-    //       error => {
-    //         console.log("Call initialization failed with exception:", error);
-    //       }
-    //     );
-    //   }
-    // };
 
     const scrollToBottom = () => {
       if (messageBottom && messageBottom) {
@@ -220,12 +141,19 @@ window.addEventListener("DOMContentLoaded", function () {
     // };
     const sendMessage = (inputMessage) => {
         if (inputMessage) {
-          // call cometchat service to send the message.
+          // call backend service to send the message.
           const message = {
             senderId:authenticatedUser.uid,
             recipentId: selectedContact.uid,
             message:inputMessage,
           };
+          socket.emit("sendMessage", {
+            senderId: authenticatedUser.uid,
+            receiverId: selectedContact.uid,
+            text: inputMessage,
+            senderAvatar: "selectedContact.avatar"
+          });
+          console.log(selectedContactAvatar)
           axios
             .post('/users/sendMessage',message)
             .then((res) => {  
@@ -267,6 +195,7 @@ window.addEventListener("DOMContentLoaded", function () {
           </div>
         `;
       } else {
+        console.log(message.sender.avatar,"+" ,message.text);
         messageContainer.innerHTML += `
           <div class="message__left">
             <div class="message__avatar">
@@ -277,6 +206,7 @@ window.addEventListener("DOMContentLoaded", function () {
             </div>
           </div>
         `;
+        console.log(messageContainer)
       }
     };
 
@@ -352,6 +282,7 @@ window.addEventListener("DOMContentLoaded", function () {
         })
         .then((messages) => {
           if (messages.data && messages.data.length !== 0) {
+            selectedContactAvatar = selectedContact.avatar;
             messages.data.forEach( (message) => {
               const messageData = {          
                 sender: {
@@ -361,6 +292,7 @@ window.addEventListener("DOMContentLoaded", function () {
                 isRight: false,
                 date: message.created_at
               }
+              console.log(messages);
               transferMessageData.push(messageData)
             })
             console.log(transferMessageData)
