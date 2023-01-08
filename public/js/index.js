@@ -59,11 +59,10 @@ window.addEventListener("DOMContentLoaded", function () {
     })
 
     socket.on("getMessage", (data) => {
-      console.log(data)
       if(selectedContact.uid === data.senderId){
         renderSingleMessage({
           sender: {
-            avatar: "../img/logo.svg"
+            avatar: data.receiverAvatar
           },
           text: data.text,
           isRight: false
@@ -151,7 +150,7 @@ window.addEventListener("DOMContentLoaded", function () {
             senderId: authenticatedUser.uid,
             receiverId: selectedContact.uid,
             text: inputMessage,
-            senderAvatar: "selectedContact.avatar"
+            receiverAvatar: chatBoxUserAvatar.src
           });
           console.log(selectedContactAvatar)
           axios
@@ -195,7 +194,6 @@ window.addEventListener("DOMContentLoaded", function () {
           </div>
         `;
       } else {
-        console.log(message.sender.avatar,"+" ,message.text);
         messageContainer.innerHTML += `
           <div class="message__left">
             <div class="message__avatar">
@@ -206,7 +204,6 @@ window.addEventListener("DOMContentLoaded", function () {
             </div>
           </div>
         `;
-        console.log(messageContainer)
       }
     };
 
@@ -282,20 +279,17 @@ window.addEventListener("DOMContentLoaded", function () {
         })
         .then((messages) => {
           if (messages.data && messages.data.length !== 0) {
-            selectedContactAvatar = selectedContact.avatar;
             messages.data.forEach( (message) => {
               const messageData = {          
                 sender: {
-                  avatar: selectedContact.avatar
+                  avatar: chatBoxUserAvatar.src
                 },
                 text:message.message,
                 isRight: false,
                 date: message.created_at
               }
-              console.log(messages);
               transferMessageData.push(messageData)
             })
-            console.log(transferMessageData)
             renderMessages(transferMessageData);
           }
         })
@@ -350,7 +344,6 @@ window.addEventListener("DOMContentLoaded", function () {
     }
 
     const renderFriends = (userList) => {
-      console.log(userList)
       if (userList && userList.length !== 0) {
         userList.forEach(user => {
           if (user) {
@@ -372,10 +365,8 @@ window.addEventListener("DOMContentLoaded", function () {
           ccUid: authenticatedUser.uid,
         })
         .then(async(res) => {
-          console.log(res)
           if (res && res.length !== 0) {
             const userList = await getMatcherData(res.data);
-            console.log(userList);
             mainLeftEmpty.classList.add('hide');
             mainLeftMessagesContainer.innerHTML = '';
             renderFriends(userList);

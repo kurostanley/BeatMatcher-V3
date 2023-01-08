@@ -91,14 +91,14 @@ io.sockets.on('connection', function (socket) {
   })
 
   //send and get message
-  socket.on("sendMessage", ({ senderId, receiverId, text, senderAvatar }) => {
+  socket.on("sendMessage", ({ senderId, receiverId, text, receiverAvatar }) => {
     const user = getUser(receiverId);
     if(user){
       io.to(user.socketId).emit("getMessage", {
         senderId,
         receiverId,
         text,
-        senderAvatar
+        receiverAvatar
       });
       console.log("message send")
     }
