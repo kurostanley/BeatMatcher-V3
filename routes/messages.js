@@ -1,4 +1,4 @@
-module.exports = function ({ app, dbConn, upload, constants }) {
+module.exports = function ({ app, dbConn, uploadPic, uploadMusic, constants }) {
     app.post('/users/sendMessage', (req, res) => {
         const { senderId, recipentId, message } = req.body;
         if (senderId && recipentId && message) {

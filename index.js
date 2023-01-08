@@ -45,16 +45,27 @@ const constants = {
 // const upload = multer({ storage: storage });
 
 // config multers for music.
-const storage = multer.diskStorage({
+const storagePic = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "public/img");
+  },
+  filename: function (req, file, cb) {
+    cb(null, `${file.fieldname}-${Date.now()}.jpg`);
+  },
+});
+
+const uploadPic = multer({ storage: storagePic });
+
+const storageMusic = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public/music");
   },
   filename: function (req, file, cb) {
     cb(null, `${file.fieldname}-${Date.now()}.mp3`);
   },
 });
 
-const upload = multer({ storage: storage });
+const uploadMusic = multer({ storage: storageMusic });
 
 
 // create datbase connection
@@ -123,7 +134,7 @@ dbConn.connect(function (err) {
     throw err;
   }
   console.log("Database was connected");
-  require("./routes")({ app, dbConn, upload, constants })
+  require("./routes")({ app, dbConn, uploadPic, uploadMusic, constants })
   app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);
   });

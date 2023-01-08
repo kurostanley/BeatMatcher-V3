@@ -3,9 +3,9 @@ const userRoutes = require("./users");
 const matchRequestsRoutes = require("./requests");
 const messages = require("./messages");
 
-module.exports = function ({ app, dbConn, upload, constants }) {
+module.exports = function ({ app, dbConn, uploadPic, uploadMusic, constants }) {
   authRoutes({ app, dbConn });
-  userRoutes({ app, dbConn, upload, constants });
-  matchRequestsRoutes({ app, dbConn, constants });
-  messages({ app, dbConn, upload, constants });
+  userRoutes({ app, dbConn, uploadPic, uploadMusic, constants });
+  matchRequestsRoutes({ app, dbConn, uploadMusic, constants });
+  messages({ app, dbConn, uploadPic, uploadMusic, constants });
 };

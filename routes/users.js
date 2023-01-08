@@ -1,5 +1,5 @@
-module.exports = function ({ app, dbConn, upload, constants }) {
-  app.post("/users/create", upload.single("avatar"), (req, res, next) => {
+module.exports = function ({ app, dbConn, uploadPic, uploadMusic, constants }) {
+  app.post("/users/create", uploadPic.single("avatar"), uploadMusic.single("clip"), (req, res, next) => {
     // validate the avatar. The avatar is requied.
     const file = req.file;
     console.log(file)
