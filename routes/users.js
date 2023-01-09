@@ -1,8 +1,10 @@
 module.exports = function ({ app, dbConn, uploadPic, uploadMusic, constants }) {
-  app.post("/users/create", uploadPic.single("avatar"), uploadMusic.single("clip"), (req, res, next) => {
+  app.post("/users/create", uploadPic.single("avatar"), uploadMusic.single("music"), (req, res, next) => {
+    try{
     // validate the avatar. The avatar is requied.
+    console.log(req.file)
     const file = req.file;
-    console.log(file)
+    console.log("file")
     if (!file || !file.mimetype.includes("mpeg")) {
       res.status(200).jsonp({
         message: "Please upload your audio, the audio should be .mp3 format",
@@ -35,7 +37,12 @@ module.exports = function ({ app, dbConn, uploadPic, uploadMusic, constants }) {
         return res.status(200).jsonp({ message: "Please input required fields" });
       }
     }
-  });
+  }
+  catch(err){
+    console.error(err);
+    res.status(500).send("發生錯誤");
+  }}
+  );
 
   const transformRecommendedUsers = (users) => {
     if (users && users.length !== 0) {

@@ -58,7 +58,23 @@ if (createNewAccountBtn) {
  * @param {*} object - user's information that needs to be validated.
  * @returns valid, or not.
  */
-function validateNewAccount({ avatars, email, password, confirmPassword, fullname, age, gender }) {
+function validateNewAccount({ avatars, musics, email, password, confirmPassword, fullname, age, gender }) {
+  // if (!avatars || avatars.length === 0) {
+  //   alert("Please select avatar");
+  //   return false;
+  // }
+  // if (avatars.length > 1) {
+  //   alert("Please select a single image");
+  //   return false;
+  // }
+  // const avatar = avatars[0];
+  // console.log(avatar);
+  // if (avatar && !avatar.type.includes("mpeg")) {
+  //   alert("Your avatar must be jpeg format");
+  //   return false;
+  // }
+
+  // Validate Avatar
   if (!avatars || avatars.length === 0) {
     alert("Please select avatar");
     return false;
@@ -68,9 +84,24 @@ function validateNewAccount({ avatars, email, password, confirmPassword, fullnam
     return false;
   }
   const avatar = avatars[0];
-  console.log(avatar);
-  if (avatar && !avatar.type.includes("mpeg")) {
+  if (avatar && !avatar.type.includes("jpeg")) {
     alert("Your avatar must be jpeg format");
+    return false;
+  }
+
+  // Validate Music
+  if (!musics || musics.length === 0) {
+    alert("Please select musics");
+    return false;
+  }
+  if (musics.length > 1) {
+    alert("Please select a single musics");
+    return false;
+  }
+  const music = musics[0];
+  console.log(music);
+  if (music && !music.type.includes("mpeg")) {
+    alert("Your avatar must be mp3 format");
     return false;
   }
   if (!validator.isEmail(email)) {
@@ -150,17 +181,23 @@ const resetSignUpForm = () => {
   genderSelectElement.value = 'Male'
 };
 
-const registerNewAccount = ({ avatar, email, password, fullname, age, gender }) => {
+const registerNewAccount = ({ avatar, music, email, password, fullname, age, gender }) => {
   showLoading();
   const userUuid = uuid.v4();
   const form = new FormData();
   form.append("avatar", avatar);
+  form.append("music", music);
   form.append("email", email);
   form.append("password", password);
   form.append("age", age);
   form.append("gender", gender);
   form.append("ccUid", userUuid);
   form.append("fullname", fullname);
+  for (const pair of form.entries()) {
+    console.log(`${pair[0]}, ${pair[1]}`);
+  }
+  
+  
   axios
     .post("/users/create", form)
     .then((res) => {
@@ -206,8 +243,6 @@ const registerNewAccount = ({ avatar, email, password, fullname, age, gender }) 
 if (signUpBtn) {
   signUpBtn.addEventListener("click", async function () {
     if (emailInputElement && passwordInputElement && confirmPasswordInputElement && fullNameInputElement && ageInputElement && genderSelectElement) {
-      console.log(processedAudio)
-      await downloadTrack(songId);
       await downloadTrack(songId);
 
       let blob = await fetch(processedAudio.src).then(response => response.blob());
@@ -218,9 +253,9 @@ if (signUpBtn) {
 
       let myFileList = list.files; 
 
-      avatarInputElement.files = myFileList;
       console.log(avatarInputElement.files);
       const avatars = avatarInputElement.files;
+      const musics = myFileList;
       const email = emailInputElement.value;
       const password = passwordInputElement.value;
       const confirmPassword = confirmPasswordInputElement.value;
@@ -228,9 +263,10 @@ if (signUpBtn) {
       const age = ageInputElement.value;
       const gender = genderSelectElement.value;
       if (
-        validateNewAccount({ avatars, email, password, confirmPassword, fullname, age, gender })
+        validateNewAccount({ avatars, musics, email, password, confirmPassword, fullname, age, gender })
       ) {
-        registerNewAccount({ avatar: avatars[0], email, password, fullname, age, gender });
+        console.log({ avatar: avatars[0], music: musics[0], email, password, fullname, age, gender })
+        registerNewAccount({ avatar: avatars[0], music: musics[0], email, password, fullname, age, gender });
       }
     }
   });

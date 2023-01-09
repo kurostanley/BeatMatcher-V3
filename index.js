@@ -44,7 +44,7 @@ const constants = {
 
 // const upload = multer({ storage: storage });
 
-// config multers for music.
+// config multers for picture.
 const storagePic = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "public/img");
@@ -56,6 +56,7 @@ const storagePic = multer.diskStorage({
 
 const uploadPic = multer({ storage: storagePic });
 
+// config multers for music.
 const storageMusic = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "public/music");
