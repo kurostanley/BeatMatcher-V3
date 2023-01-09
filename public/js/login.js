@@ -199,7 +199,7 @@ const registerNewAccount = ({ avatar, music, email, password, fullname, age, gen
   
   
   axios
-    .post("/users/create", form)
+    .post("/users/create", form, { headers: { 'Content-Type': 'multipart/form-data' } })
     .then((res) => {
       if (res && res.data && res.data.message) {
         alert(res.data.message);
