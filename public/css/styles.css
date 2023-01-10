@@ -373,7 +373,7 @@ body {
   }
   
   .header {
-    background: #fe3c72;
+    background: #f52626;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     height: 3.5rem;
