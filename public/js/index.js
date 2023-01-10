@@ -39,7 +39,11 @@ window.addEventListener("DOMContentLoaded", function () {
     const audioCallBtn = document.getElementById("audio-call");
     const videoCallBtn = document.getElementById("video-call");
     const callScreen = document.getElementById("callScreen");
-    
+
+    // new
+    const signUpContainer = document.getElementById("signup");
+    const signUpCloseBtn = document.getElementById("signup__close-btn");
+
     const socket = io("http://localhost:3000");
 
 
@@ -50,6 +54,7 @@ window.addEventListener("DOMContentLoaded", function () {
     let listenerID = null;
     let upcomingCall = null;
     let selectedContact = null;
+    let selectedContactName = null
     let selectedContactAvatar = null; 
     let notificationListenerID = authenticatedUser.uid;
 
@@ -336,6 +341,7 @@ window.addEventListener("DOMContentLoaded", function () {
         selectedContact = { uid: selectedUid };
         chatBox.classList.remove("hide");
         chatBoxUserName.innerHTML = name;
+        selectedContactName = name;
         chatBoxUserAvatar.src = avatar;
         messageContainer.innerHTML = '';
         loadMessages();
@@ -520,8 +526,8 @@ window.addEventListener("DOMContentLoaded", function () {
           if (index === 0) {
             cardList.innerHTML += `<div class="main__card-item" style="display: block;" data-id="${user.user_cometchat_uid}" data-name="${user.user_full_name}">
               <div class="avatar" style="display: block; background-image: url(${user.user_avatar})">
-              <audio class="music" controls autoplay>
-                <source src=${user.user_avatar} type="audio/mpeg" class="avatar" style="display: block;">
+              <audio class="music" controls autoplay style="display: none;">
+                <source src=${user.user_music_clip} type="audio/mpeg" class="avatar" style="display: block;">
               Your browser does not support the audio element.
               </audio>
               </div>
@@ -530,8 +536,8 @@ window.addEventListener("DOMContentLoaded", function () {
             } else {
             cardList.innerHTML += `<div class="main__card-item" data-id="${user.user_cometchat_uid}" data-name="${user.user_full_name}">
               <div class="avatar" style="display: block; background-image: url(${user.user_avatar})">
-              <audio class="music" controls  >
-                <source src=${user.user_avatar} type="audio/mpeg" class="avatar" style="display: block;">
+              <audio class="music" controls style="display: none;">
+                <source src=${user.user_music_clip} type="audio/mpeg" class="avatar" style="display: block;">
                 Your browser does not support the audio element. 
               </audio>
               </div>
@@ -676,6 +682,32 @@ window.addEventListener("DOMContentLoaded", function () {
         upcomingCall = null;
         listenerID = null;
       });
+    }
+
+    if(chatBoxUserAvatar) {
+      chatBoxUserAvatar.addEventListener('click', function () {
+        signUpContainer.classList.remove("signup--hide");
+        const node = document.createElement("div");
+        node.innerHTML = `<div class="main__card-item" style="display: block;" data-id="${selectedContact.uid}" data-name="${selectedContactName}">
+        <div class="avatar" style="display: block; background-image: url(${chatBoxUserAvatar.src})">
+        <audio class="music" controls autoplay style="display: none;">
+          <source src= type="audio/mpeg" class="avatar" style="display: block;">
+        Your browser does not support the audio element.
+        </audio>
+        </div>
+        <span>${selectedContactName}, ${selectedContactName}</span>
+        </div>`
+
+        signUpContainer.appendChild(node);
+      });
+    }
+
+    if (signUpCloseBtn) {
+      signUpCloseBtn.addEventListener("click", function () {
+        signUpContainer.classList.add("signup--hide");
+      });
+      console.log('hide')
+
     }
 
     $("#message-input").keyup(function (e) {

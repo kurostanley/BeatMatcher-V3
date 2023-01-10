@@ -311,7 +311,8 @@ if (loginBtn) {
                     // hide loading.
                     hideLoading();
                     // store logged in user in the local storage.
-                    localStorage.setItem("auth", JSON.stringify({ uid: res.data.uid, name: res.data.name, gender: res.data.gender }));
+                    localStorage.setItem("auth", JSON.stringify({ uid: res.data.uid, avatar: res.data.avatar, 
+                      name: res.data.name, gender: res.data.gender }));
                     // redirect to home page.
                      window.location.href = "/";
             //       }

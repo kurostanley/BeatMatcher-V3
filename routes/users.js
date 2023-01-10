@@ -1,17 +1,27 @@
-module.exports = function ({ app, dbConn, uploadPic, uploadMusic, constants }) {
-  app.post("/users/create", uploadPic.single("avatar"), uploadMusic.single("music"), (req, res, next) => {
+module.exports = function ({ app, dbConn, upload, constants }) {
+  app.post("/users/create", upload.fields([
+    { name: "avatar", maxCount: 1 },
+    { name: "music", maxCount: 1 },
+  ]), (req, res, next) => {
     try{
     // validate the avatar. The avatar is requied.
-    console.log(req.file)
-    const file = req.file;
-    console.log("file")
-    if (!file || !file.mimetype.includes("mpeg")) {
+    console.log(req.files)
+    console.log(req.files.music)
+    console.log(req.files.avatar)
+
+    const file = req.files;
+    if (!file.music[0] || !file.music[0].mimetype.includes("mpeg")) {
       res.status(200).jsonp({
         message: "Please upload your audio, the audio should be .mp3 format",
-      });
-    } else {
+    });}
+    else if (!file.avatar[0] || !file.avatar[0].mimetype.includes("jpeg")) {
+      res.status(200).jsonp({
+        message: "Please upload your audio, the audio should be .jpg format",
+    });}
+    else {
 
-      const avatar = `/img/${file.filename}`;
+      const avatar = `/img/${file.avatar[0].filename}`;
+      const music = `/music/${file.music[0].filename}`;
       // get user information and check the required fields.
       const { email, password, fullname, age, gender, ccUid } = req.body;
       if (email && password && fullname && age && gender) {
@@ -22,8 +32,8 @@ module.exports = function ({ app, dbConn, uploadPic, uploadMusic, constants }) {
             res.status(200).jsonp({ message: 'The email existed in the system' });
           } else {
             // create a new user if the email did not exist in the sytem.
-            const users = [[email, password, fullname, age, avatar, gender, ccUid]];
-            const insertSql = "INSERT INTO user_account (user_email, user_password, user_full_name, user_age, user_avatar, user_gender, user_cometchat_uid) VALUES ?";
+            const users = [[email, password, fullname, age, avatar, music, gender, ccUid]];
+            const insertSql = "INSERT INTO user_account (user_email, user_password, user_full_name, user_age, user_avatar, user_music_clip, user_gender, user_cometchat_uid) VALUES ?";
             dbConn.query(insertSql, [users], function (err, result) {
               if (err) {
                 res.status(200).jsonp({ message: "Cannot create your account, please try again" });
@@ -51,6 +61,7 @@ module.exports = function ({ app, dbConn, uploadPic, uploadMusic, constants }) {
           id: user.id, 
           user_age: user.user_age,
           user_avatar: user.user_avatar,
+          user_music_clip: user.user_music_clip,
           user_cometchat_uid: user.user_cometchat_uid,
           user_email: user.user_email,
           user_full_name: user.user_full_name,

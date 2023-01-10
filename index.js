@@ -32,8 +32,9 @@ const constants = {
   },
 };
 
-// config multers.
-// const storage = multer.diskStorage({
+
+// // config multers for picture.
+// const storagePic = multer.diskStorage({
 //   destination: function (req, file, cb) {
 //     cb(null, "public/img");
 //   },
@@ -42,31 +43,39 @@ const constants = {
 //   },
 // });
 
-// const upload = multer({ storage: storage });
+// const uploadPic = multer({ storage: storagePic });
 
-// config multers for picture.
-const storagePic = multer.diskStorage({
+// // config multers for music.
+// const storageMusic = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, "public/music");
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, `${file.fieldname}-${Date.now()}.mp3`);
+//   },
+// });
+
+// const uploadMusic = multer({ storage: storageMusic });
+
+
+const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "public/img");
+    if (file.fieldname === 'avatar') {
+      cb(null, "public/img");
+    } else if (file.fieldname === 'music') {
+      cb(null, "public/music");
+    }
   },
   filename: function (req, file, cb) {
-    cb(null, `${file.fieldname}-${Date.now()}.jpg`);
+    if (file.fieldname === 'avatar') {
+      cb(null, `${file.fieldname}-${Date.now()}.jpg`);
+    } else if (file.fieldname === 'music') {
+      cb(null, `${file.fieldname}-${Date.now()}.mp3`);
+    }
   },
 });
 
-const uploadPic = multer({ storage: storagePic });
-
-// config multers for music.
-const storageMusic = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "public/music");
-  },
-  filename: function (req, file, cb) {
-    cb(null, `${file.fieldname}-${Date.now()}.mp3`);
-  },
-});
-
-const uploadMusic = multer({ storage: storageMusic });
+const upload = multer({ storage: storage });
 
 
 // create datbase connection
@@ -135,7 +144,7 @@ dbConn.connect(function (err) {
     throw err;
   }
   console.log("Database was connected");
-  require("./routes")({ app, dbConn, uploadPic, uploadMusic, constants })
+  require("./routes")({ app, dbConn, upload, constants })
   app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);
   });

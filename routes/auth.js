@@ -5,7 +5,7 @@ module.exports = function ({ app, dbConn }) {
         const sql = "SELECT * FROM user_account WHERE user_email = ? AND user_password = ?";
         dbConn.query(sql, [email, password], function (err, result) {
           if (result && result.length !== 0) {
-            res.status(200).jsonp({ gender: result[0].user_gender, uid: result[0].user_cometchat_uid, name: result[0].user_full_name});
+            res.status(200).jsonp({ gender: result[0].user_gender, avatar: result[0].user_avatar, uid: result[0].user_cometchat_uid, name: result[0].user_full_name});
           } else {
             res.status(200).jsonp({ message: "Your username or password is not correct" });
           }
