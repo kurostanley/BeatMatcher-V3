@@ -16,6 +16,7 @@ body {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+    border-bottom-color: black
   }
   
   input {
@@ -233,7 +234,7 @@ body {
   
   /* The Modal (background) */
   .signup {
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgb(145 145 145 / 80%);
     display: block; /* Hidden by default */
     height: 100%; /* Full height */
     left: 0;
@@ -373,7 +374,8 @@ body {
   }
   
   .header {
-    background: #f52626;
+    background: #2C2F33;
+    border-bottom: solid black;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     height: 3.5rem;
@@ -444,11 +446,13 @@ body {
     position: fixed;
     top: 0;
     width: 30%;
+    border: solid black;
+
   }
   
   .main__right {
     align-items: center;
-    background: #f9fafb;
+    background: #2C2F33;
     display: grid;
     left: 30%;
     min-height: 100vh;
@@ -728,12 +732,16 @@ body {
   }
   
   .main__left-title {
-    color: #fe3c72;
+    background-color: #2C2F33;
+    border-bottom: solid black 0.1rem;
+    color: #f52626;
     font-weight: bold;
     padding: 0.5rem;
   }
   
   .main__left-messages {
+    color: white;
+    background: #2C2F33;
     min-height: 100vh;
     overflow: auto;
   }
@@ -758,12 +766,12 @@ body {
   }
   
   .main__left-message:hover {
-    background: #f9fafb;
+    background: grey;
     cursor: pointer;
   }
   
   .chatbox {
-    background: white;
+    background: #1d1f23;
     border-top-left-radius: 0.5rem;
     border-top-right-radius: 0.5rem;
     bottom: 0;
@@ -876,11 +884,11 @@ body {
   }
   
   .message__content--left {
-    background-color: #D1D5DB;
+    background-color: #83888f;
   }
   
   .message__content--right {
-    background-color: #fe3c72;
+    background-color: #49ce63;
   }
   
   #callScreen {
