@@ -64,7 +64,7 @@ window.addEventListener("DOMContentLoaded", function () {
     })
 
     socket.on("getMessage", (data) => {
-      if(selectedContact.uid === data.senderId){
+      if(selectedContact && selectedContact.uid === data.senderId){
         renderSingleMessage({
           sender: {
             avatar: data.receiverAvatar
@@ -74,6 +74,21 @@ window.addEventListener("DOMContentLoaded", function () {
         })
         scrollToBottom();
       }
+      else{
+        const friend = document.getElementById(`friend_${data.senderId}`)
+        friend.style.background = "green";
+      }
+    })
+
+    socket.on("getMatch", (data) => {
+      console.log(data);
+      const matcherData = {
+        uid: data.senderId,
+        avatar: data.senderAvatar,
+        name: data.senderName
+      };
+      const matchFriend = {data: matcherData};
+      renderFriends([matchFriend]);
     })
 
 
@@ -339,6 +354,9 @@ window.addEventListener("DOMContentLoaded", function () {
     window.openChatBox = (selectedUid, name, avatar) => {
       if (selectedUid && name && avatar && !isCurrentUser(selectedContact, selectedUid)) {
         selectedContact = { uid: selectedUid };
+        console.log(selectedContact)
+        const friend = document.getElementById(`friend_${selectedUid}`)
+        friend.style.background = "";
         chatBox.classList.remove("hide");
         chatBoxUserName.innerHTML = name;
         selectedContactName = name;
@@ -352,8 +370,9 @@ window.addEventListener("DOMContentLoaded", function () {
     const renderFriends = (userList) => {
       if (userList && userList.length !== 0) {
         userList.forEach(user => {
+          console.log(user)
           if (user) {
-            mainLeftMessagesContainer.innerHTML += `<div class="main__left-message" onclick="openChatBox('${user.data.uid}', '${user.data.name}', '${user.data.avatar}')">
+            mainLeftMessagesContainer.innerHTML += `<div class="main__left-message" id="friend_${user.data.uid}" onclick="openChatBox('${user.data.uid}', '${user.data.name}', '${user.data.avatar}')">
               <img
                 src="${user.data.avatar}"
                 alt="${user.data.name}"
@@ -468,18 +487,39 @@ window.addEventListener("DOMContentLoaded", function () {
       }
     };
 
-    const createMatchRequest = (matchRequestTo, matchRequestReceiver) => {
+    const createMatchRequest = (matchRequestTo, matchRequestReceiver, matchRequestReceiverAvatar) => {
       console.log(authenticatedUser.name );
 
       if (authenticatedUser && authenticatedUser.uid && authenticatedUser.name && matchRequestTo && matchRequestReceiver) {
+                
+        // For Database update
         axios.post('/requests/create', {
           matchRequestFrom: authenticatedUser.uid,
           matchRequestSender: authenticatedUser.name,
+          // Id
           matchRequestTo,
+          // Name
           matchRequestReceiver
         }).then(res => {
+          console.log(res)
           if (res && res.data && res.data.match_request_status && res.data.match_request_status === 1) {
             // addFriend(authenticatedUser.uid, matchRequestTo, matchRequestReceiver);
+            const matcherData = {
+              uid: matchRequestTo,
+              avatar: matchRequestReceiverAvatar,
+              name: matchRequestReceiver
+            };
+            const matchFriend = {data: matcherData};
+            //console.log(matchFriend)
+            renderFriends([matchFriend]);
+            // Match! give a notification
+            socket.emit("match", {
+              senderId: authenticatedUser.uid,
+              senderName: authenticatedUser.name,
+              senderAvatar: authenticatedUser.avatar,
+              receiverId: matchRequestTo,
+              receiverName: matchRequestReceiver
+            });
           }
         }).catch(error => { });
       }
@@ -494,7 +534,13 @@ window.addEventListener("DOMContentLoaded", function () {
       $(element).next().removeClass('rotate-left rotate-right').fadeIn(400);
       const matchRequestTo = $(element).attr('data-id');
       const matchRequestReceiver = $(element).attr('data-name');
-      createMatchRequest(matchRequestTo, matchRequestReceiver);
+      // get the avatar
+      const firstDiv = $(element).find("div:first");
+      const backgroundImage = firstDiv.css("background-image");
+      let imageUrl = backgroundImage.match(/url\(['"]?([^'"]+)['"]?\)/)[1];
+
+      const matchRequestReceiverAvatar = imageUrl;
+      createMatchRequest(matchRequestTo, matchRequestReceiver, matchRequestReceiverAvatar);
       setTimeout(() => {
         shouldHideMainCard();
       }, 1100);
@@ -533,6 +579,27 @@ window.addEventListener("DOMContentLoaded", function () {
               </div>
               <span>${user.user_full_name}, ${user.user_age}</span>
             </div>`;
+            // cardList.innerHTML += `<div class="slide__audio js-audio">
+            // <audio class="slide__audio-player" controls="">
+            //    <source src="https://www.soundjay.com/nature/sounds/rain-01.mp3" type="audio/mpeg"/>
+            // </audio>
+            // <div class="audio__controls">
+            //    <svg version="1.1" id="circle" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 100 100">
+            //       <path id="seekbar" fill="none" stroke-meterlimit="10" d="M50,2.9L50,2.9C76,2.9,97.1,24,97.1,50v0C97.1,76,76,97.1,50,97.1h0C24,97.1,2.9,76,2.9,50v0C2.9,24,24,2.9,50,2.9z"/>
+            //    </svg>
+            //    <svg xmlns="http://www.w3.org/2000/svg" class="equalizer" viewBox="0 0 100 100">
+            //       <g class="equalizer-group">
+            //          <rect class="bar"></rect>
+            //          <rect class="bar"></rect>
+            //          <rect class="bar"></rect>
+            //          <rect class="bar"></rect>
+            //          <rect class="bar"></rect>
+            //       </g>
+            //    </svg>
+            //    <div class="audio__slider"></div>
+            //    <button class="play-pause"></button>
+            // </div>`;
+
             } else {
             cardList.innerHTML += `<div class="main__card-item" data-id="${user.user_cometchat_uid}" data-name="${user.user_full_name}">
               <div class="avatar" style="display: block; background-image: url(${user.user_avatar})">
@@ -759,6 +826,83 @@ window.addEventListener("DOMContentLoaded", function () {
     loadRecommendedUsers();
     loadFriends();
     //listenForNotifications();
+
+    "use strict";
+
+    $('.js-audio').each(function (index, el) {
+      initAudioPlayer($(this), index);
+    });
+    $('.audio__slider').roundSlider({
+      radius: 50,
+      value: 0,
+      startAngle: 90,
+      width: 5,
+      handleSize: '+6',
+      handleShape: 'round',
+      sliderType: 'min-range'
+    });
+    $('.audio__slider').on('drag, change', function (e) {
+      let $this = $(this);
+      let $elem = $this.closest('.js-audio');
+      updateAudio(e, $elem);
+      $this.addClass('active');
+    });
+    function updateAudio(e, $elem) {
+      console.log(e.handle.value);
+      let value = e.handle.value;
+      // var thisPlayer = el.find('.js-audio'),
+      var play = $elem.find('.play-pause'),
+        circle = $elem.find('#seekbar'),
+        getCircle = circle.get(0),
+        totalLength = getCircle.getTotalLength(),
+        //currentTime = $elem.find('audio')[0].currentTime,
+        maxduration = $elem.find('audio')[0].duration;
+      var y = value * maxduration / 100;
+      $elem.find('audio')[0].currentTime = y;
+    }
+    function initAudioPlayer(player) {
+      let audio = player.find('audio'),
+        play = player.find('.play-pause'),
+        circle = player.find('#seekbar'),
+        getCircle = circle.get(0),
+        totalLength = getCircle.getTotalLength();
+      circle.attr({
+        'stroke-dasharray': totalLength,
+        'stroke-dashoffset': totalLength
+      });
+      play.on('click', () => {
+        if (audio[0].paused) {
+          $('audio').each((index, el) => {
+            $('audio')[index].pause();
+          });
+          $('.js-audio').removeClass('playing');
+          audio[0].play();
+          player.removeClass('paused');
+          player.addClass('playing');
+        } else {
+          audio[0].pause();
+          player.removeClass('playing');
+          player.addClass('paused');
+        }
+      });
+      audio.on('timeupdate', () => {
+        let currentTime = audio[0].currentTime,
+          maxduration = audio[0].duration,
+          calc = totalLength - currentTime / maxduration * totalLength;
+        circle.attr('stroke-dashoffset', calc);
+        let value = Math.floor(currentTime / maxduration * 100);
+        var slider = audio.closest('.js-audio').find('.audio__slider');
+        $(slider).roundSlider('setValue', value);
+      });
+      audio.on('ended', () => {
+        player.removeClass('playing');
+        circle.attr('stroke-dashoffset', totalLength);
+      });
+    }
+
+
+
+
 
   } else {
     // redirect user to the login page.

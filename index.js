@@ -125,6 +125,21 @@ io.sockets.on('connection', function (socket) {
     }
   });
 
+  //get new like from someone
+  socket.on("match", ({ senderId, senderName, senderAvatar, receiverId, receiverName }) => {
+    const user = getUser(receiverId);
+    if(user){
+      io.to(user.socketId).emit("getMatch", {
+        senderId,
+        senderName,
+        senderAvatar,
+        receiverId,
+        receiverName
+      });
+    }
+  });
+
+
   //when disconnect
   socket.on("disconnect", () => {
     console.log("a user disconnected!");
