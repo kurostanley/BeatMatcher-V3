@@ -77,6 +77,7 @@ window.addEventListener("DOMContentLoaded", function () {
       else{
         const friend = document.getElementById(`friend_${data.senderId}`)
         friend.style.background = "green";
+        toastr.info(`There is new message from ${data.senderName}`);
       }
     })
 
@@ -89,6 +90,7 @@ window.addEventListener("DOMContentLoaded", function () {
       };
       const matchFriend = {data: matcherData};
       renderFriends([matchFriend]);
+      toastr.info(`There is new match! from ${matcherData.name}`);
     })
 
 
@@ -168,6 +170,7 @@ window.addEventListener("DOMContentLoaded", function () {
           };
           socket.emit("sendMessage", {
             senderId: authenticatedUser.uid,
+            senderName: authenticatedUser.name,
             receiverId: selectedContact.uid,
             text: inputMessage,
             receiverAvatar: chatBoxUserAvatar.src
@@ -512,7 +515,7 @@ window.addEventListener("DOMContentLoaded", function () {
             const matchFriend = {data: matcherData};
             //console.log(matchFriend)
             renderFriends([matchFriend]);
-            // Match! give a notification
+            // Match! give a notification to others
             socket.emit("match", {
               senderId: authenticatedUser.uid,
               senderName: authenticatedUser.name,
@@ -520,6 +523,8 @@ window.addEventListener("DOMContentLoaded", function () {
               receiverId: matchRequestTo,
               receiverName: matchRequestReceiver
             });
+            // Match! give a notification to myself
+            toastr.info(`There is new match! from ${matchRequestReceiver}`);
           }
         }).catch(error => { });
       }
