@@ -29,7 +29,7 @@ body {
   }
   
   .login__container {
-    background-color: #f0f2f5;
+    background-color: #2C2F33;
     display: grid;
     grid-template-columns: 55% 45%;
     height: 100vh;
@@ -42,12 +42,12 @@ body {
   }
   
   .login__logo img {
-    width: 10.25rem !important;
+    width: 27.25rem !important;
   }
   
   .login__welcome {
-    padding-left: 10.5rem;
-    padding-top: 13.5rem;
+    padding-left: 12rem;
+    padding-top: 3rem;
   }
   
   .login__welcome img {
@@ -68,7 +68,7 @@ body {
   }
   
   .login__form {
-    background-color: #fff;
+    background-color: #f2b550;
     box-shadow: 0 2px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
     padding: 1.25rem;
     width: 24.75rem;
@@ -83,7 +83,7 @@ body {
   }
   
   .login__submit-btn {
-    background-color: #fe3c72;
+    background-color: #49ce63;
     border: 0;
     color: #fff;
     font-size: 1rem;
@@ -251,7 +251,7 @@ body {
   
   /* Modal Content/Box */
   .signup__content {
-    background-color: #fefefe;
+    background-color: #F2B550;
     box-shadow: 0 2px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
     margin: 15% auto; /* 15% from the top and centered */
     margin-top: 0%;
@@ -264,6 +264,7 @@ body {
   }
   
   .signup__title {
+    color:white;
     font-size: 1.25rem;
     font-weight: 600;
     padding: 1.25rem 0 0.5rem 1.25rem;
@@ -321,7 +322,6 @@ body {
   }
   
   .signup__form input {
-    background-color: #f3f4f6;
     border: 1px solid #e5e7eb;
     display: block;
     font-size: 0.9375rem;
@@ -357,7 +357,7 @@ body {
   }
   
   .signup__btn {
-    background-color: #fe3c72;
+    background-color: #49CE63;
     border: 0;
     color: #fff;
     display: block;
@@ -464,6 +464,10 @@ body {
     display: grid;
     justify-content: center;
   }
+
+  #main__card-empty {
+    color:white
+  }
   
   .main__card-info {
     position: relative;
@@ -557,6 +561,19 @@ body {
     top: 50px;
     width: 240px;
   }
+
+  .main__card-item_detail  {
+    background: #fff;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    color: #fff;
+    cursor: hand;
+    height: 360px;
+    left: 132px;
+    position: relative;
+    top: 170px;
+    width: 240px;
+  }
   
   .main__card-item span {
     bottom: 0;
@@ -566,6 +583,16 @@ body {
     padding: 1rem;
     position: absolute;
   }
+
+  .main__card-item_detail span {
+    bottom: 0;
+    color: white;
+    font-size: 1.25rem;
+    font-weight: 600;
+    padding: 1rem;
+    position: absolute;
+  }
+
   
   .rotate-left {
     transform: rotate(30deg) scale(0.8);
@@ -591,7 +618,7 @@ body {
     height: 360px;
     display: block;
     background-size: auto 160% !important;
-    background-position: center;
+    background-position: top;
     background-repeat: no-repeat;
     border-radius: 0.5rem;
   }
@@ -734,7 +761,7 @@ body {
   .main__left-title {
     background-color: #2C2F33;
     border-bottom: solid black 0.1rem;
-    color: #f52626;
+    color: #FD7F32;
     font-weight: bold;
     padding: 0.5rem;
   }
@@ -794,6 +821,7 @@ body {
   }
   
   .chatbox__title-left {
+    color: white;
     align-items: center;
     display: grid;
     grid-gap: 0.5rem;
@@ -989,13 +1017,12 @@ body {
   }
   
   .toast-info {
-    background-color: #fe3c72 !important;
+    background-color: #FD7F32 !important;
   }
 
   .box {
-    width: 500px;
-    height: 500px;
-    box-shadow: 0 15px 15px rgba(0, 0, 0, .3);
+    width: 50px;
+    height: 50px;
     position: relative;
     top: 50%;
     left: 50%;
@@ -1017,7 +1044,7 @@ body {
   .circle {
     fill: none;
     stroke: url(#gradient);
-    stroke-width: 20;
+    stroke-width: 7;
     stroke-linecap: round;
   }
   
@@ -1026,8 +1053,8 @@ body {
   .backcircle { stroke: rgba(255, 255, 255, .2) }
   
   .progress {
-    stroke-dasharray: 1414;
-    stroke-dashoffset: 1414;
+    stroke-dasharray: 158;
+    stroke-dashoffset: 158;
     transform-origin: center center;
     transform: rotateZ(-90deg);
   }
@@ -1040,19 +1067,7 @@ body {
     align-items: center;
     text-align: center;
   }
-  
-  .lyric {
-    font-size: 1.5em;
-    transition: .5s;
-    width: 100%;
-    background-size: 100% 1100%;
-    background-image: linear-gradient(#cf5c5c, #c19b4a, #def2a0, #c6ee4a, #42eca6, #64b3d9, #208ea2, #498ada, #5b73df, #897ed3, #cf5c5c, #c19b4a);
-    -webkit-text-fill-color: transparent;
-    -webkit-background-clip: text;
-    font-weight: bold;
-    animation: gradient 10s linear infinite;
-  }
-  
+    
   @keyframes gradient {
     0% { background-position: 0% 0%; }
     100% { background-position: 0% 100%; }
@@ -1060,9 +1075,9 @@ body {
   
   .play {
     background: none;
-    border-top: 50px solid transparent;
-    border-bottom: 50px solid transparent;
-    border-left: 75px solid lightgreen;
+    border-top: 15px solid transparent;
+    border-bottom: 15px solid transparent;
+    border-left: 22px solid lightgreen;
     position: absolute;
     z-index: 10;
     cursor: pointer;
@@ -1086,5 +1101,5 @@ body {
     top: 15%;
     font-size: 1.5em;
     color: rgba(255, 255, 255, .3);
+    display: none;
   }
-  

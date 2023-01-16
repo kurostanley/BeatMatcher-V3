@@ -42,7 +42,11 @@ function hideSignUp() {
 // add event for sign up close button.
 if (signUpCloseBtn) {
   signUpCloseBtn.addEventListener("click", function () {
+    resetAvatarSelection();
     hideSignUp();
+    wavesurfer.destroy();
+    document.getElementById("audio-buttons").classList.remove("w3-show")
+    document.getElementById("audio-buttons").classList.add("w3-hide")
   });
 }
 
@@ -84,6 +88,7 @@ function validateNewAccount({ avatars, musics, email, password, confirmPassword,
     return false;
   }
   const avatar = avatars[0];
+  console.log(avatar.type)
   if (avatar && !avatar.type.includes("jpeg")) {
     alert("Your avatar must be jpeg format");
     return false;
@@ -243,6 +248,10 @@ const registerNewAccount = ({ avatar, music, email, password, fullname, age, gen
 if (signUpBtn) {
   signUpBtn.addEventListener("click", async function () {
     if (emailInputElement && passwordInputElement && confirmPasswordInputElement && fullNameInputElement && ageInputElement && genderSelectElement) {
+      showLoading();
+
+      wavesurfer.pause();
+      
       await downloadTrack(songId);
 
       let blob = await fetch(processedAudio.src).then(response => response.blob());
@@ -267,7 +276,10 @@ if (signUpBtn) {
       ) {
         console.log({ avatar: avatars[0], music: musics[0], email, password, fullname, age, gender })
         registerNewAccount({ avatar: avatars[0], music: musics[0], email, password, fullname, age, gender });
+        hideLoading();
       }
+      hideLoading();
+
     }
   });
 }

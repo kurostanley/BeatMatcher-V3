@@ -43,13 +43,8 @@ window.addEventListener("DOMContentLoaded", function () {
     // new
     const signUpContainer = document.getElementById("signup");
     const signUpCloseBtn = document.getElementById("signup__close-btn");
+    let detailNode = null;
 
-    // audio visualize
-    let audio = null;
-    let lyric = null;
-    let play = null;
-    let time = null;
-    let progresses = null;
 
     const socket = io("http://localhost:3000");
 
@@ -576,7 +571,7 @@ window.addEventListener("DOMContentLoaded", function () {
         swipeLeft(this);
       });
     };
-
+    
     const renderCardList = (recommendedUsers) => {
       if (recommendedUsers && recommendedUsers.length !== 0) {
         const cardList = document.getElementById("main__card-item-container");
@@ -595,12 +590,12 @@ window.addEventListener("DOMContentLoaded", function () {
                   <stop offset="50%" stop-color="blue" />
                   <stop offset="100%" stop-color="green" />
                 </linearGradient>
-                <circle class="circle progress" cx="250" cy="250" r="225"></circle>
-                <circle class="circle blur progress" cx="250" cy="250" r="225"></circle>
-                <circle class="circle backcircle" cx="250" cy="250" r="225"></circle>
+                <circle class="circle progress" cx="25" cy="25" r="25"></circle>
+                <circle class="circle blur progress" cx="25" cy="25" r="25"></circle>
+                <circle class="circle backcircle" cx="25" cy="25" r="25"></circle>
               </svg>
               <div class="texts">
-                <span class="time">00:00</span>
+                <span class="time" >00:00</span>
                 <div class="lyric"></div>
                 <div class="play"></div>
               </div>
@@ -608,25 +603,6 @@ window.addEventListener("DOMContentLoaded", function () {
               </div>
               <span>${user.user_full_name}, ${user.user_age}</span>
             </div>`;
-            // cardList.innerHTML += `<audio src="../music/music-1673375057973.mp3" ></audio>
-            // <section class="box">
-            //   <svg>
-            //     <linearGradient id="gradient">
-            //       <stop offset="0%" stop-color="red" />
-            //       <stop offset="50%" stop-color="blue" />
-            //       <stop offset="100%" stop-color="green" />
-            //     </linearGradient>
-            //     <circle class="circle progress" cx="250" cy="250" r="225"></circle>
-            //     <circle class="circle blur progress" cx="250" cy="250" r="225"></circle>
-            //     <circle class="circle backcircle" cx="250" cy="250" r="225"></circle>
-            //   </svg>
-            //   <div class="texts">
-            //     <span class="time">00:00</span>
-            //     <div class="lyric"></div>
-            //     <div class="play"></div>
-            //   </div>
-            // </section>`;      
-
             } else {
             cardList.innerHTML += `<div class="main__card-item" data-id="${user.user_cometchat_uid}" data-name="${user.user_full_name}">
               <div class="avatar" style="display: block; background-image: url(${user.user_avatar})">
@@ -634,76 +610,114 @@ window.addEventListener("DOMContentLoaded", function () {
                 <source src=${user.user_music_clip} type="audio/mpeg" class="avatar" style="display: block;">
                 Your browser does not support the audio element. 
               </audio>
+              <section class="box">
+              <svg>
+                <linearGradient id="gradient">
+                  <stop offset="0%" stop-color="red" />
+                  <stop offset="50%" stop-color="blue" />
+                  <stop offset="100%" stop-color="green" />
+                </linearGradient>
+                <circle class="circle progress" cx="25" cy="25" r="25"></circle>
+                <circle class="circle blur progress" cx="25" cy="25" r="25"></circle>
+                <circle class="circle backcircle" cx="25" cy="25" r="25"></circle>
+              </svg>
+              <div class="texts">
+                <span class="time" >00:00</span>
+                <div class="lyric"></div>
+                <div class="play"></div>
+              </div>
+              </section>
               </div>
               <span>${user.user_full_name}, ${user.user_age}</span>
             </div>`;
           }
+        });
+        applySwing();
+        progressbar()
+      }
+    };
+    let intervalId;
 
-          audio = document.querySelector('audio');
-          lyric = document.querySelector('.lyric');
-          play = document.querySelector('.play');
-          time = document.querySelector('.time');
-          progresses = Array.from(document.querySelectorAll('.progress'));
+    const progressbar = () => {
+      const audio = document.querySelector('audio');
+      const lyric = document.querySelector('.lyric');
+      const play = document.querySelector('.play');
+      const time = document.querySelector('.time');
+      const progresses = Array.from(document.querySelectorAll('.progress'));
 
-          play.addEventListener('click', e => {
-            audio.play();
-            play.style.opacity = '0';
-            //play.style.pointerEvents = 'none';
-          })
+      play.addEventListener('click', e => {
+        audio.play();
+        play.style.opacity = '0';
+        //play.style.pointerEvents = 'none';
+      })
 
-          audio.addEventListener('pause', e => {
-            play.style.opacity = '100';
-          });
+      audio.addEventListener('play', e => {
+        play.style.opacity = '0';
+      });
 
 
-          // async function loadFile(fileName) {
-          //   return await fetch(fileName)
-          //     .then(data => data.text())
-          //     .then(data => data.trim().split("\n")) // break lines to array
-          //     .catch(err => console.error(err))
-          // }
-      
-          // async function start(e) {
-          //   let index = 1;
-          //   (await loadFile('lyric.lrc')).forEach(line => {
-          //     line = line.trim();
-          //     let minute = parseInt(line.substr(1, 2));
-          //     let second = parseInt(line.substr(4, 5));
-          //     if(isNaN(minute) || isNaN(second)) return;
-      
-          //     let text = line.substr(line.indexOf(']') + 1, line.length).trim();
-          //     setTimeout(() => {
-          //       lyric.style.transform = `rotateZ(${index++ * 360}deg)`;
-          //       lyric.innerText = text;
-          //     }, (second + (minute * 60)) * 1000);
-          //   })
-          // }
-      
-          setInterval(() => {
-            let current = Math.floor(audio.currentTime); // time of current playing music
+      audio.addEventListener('pause', e => {
+        play.style.opacity = '100';
+      });
+  
+      intervalId = setInterval(() => {
+        let current = Math.floor(audio.currentTime); // time of current playing music
+        let currentSmall = audio.currentTime;
+        let minute = Math.floor(current / 60);
+        let second = current % 60;
+        minute = minute < 10 ? '0' + minute : minute;
+        second = second < 10 ? '0' + second : second;
+        time.innerText = `${minute}:${second}`;
+        progresses.forEach(progress => {
+          // magic number : const = 1414/225
+          progress.style.strokeDashoffset = 158 - (158 * ((currentSmall / audio.duration) * 100)) / 100;
+        })
+      }, 100); // this function run all second
+
+    }
+
+    // playNextmusic
+    const playMusic = () => {
+      const i = getNextCard();
+      if(i){
+        let audio = $(i).find("audio").get(0);
+        audio.play();
+        $(audio).on('play', function() {
+          $('.play').css('opacity', '0');
+        });
+          
+        $(audio).on('pause', function() {
+          $('.play').css('opacity', '100');
+        });
+          
+        $('.play').on('click', function() {
+          audio.play();
+          $(this).css('opacity', '0');
+        });
+
+        const time = $(i).find('.time').get(0);
+        const progresses = Array.from($(i).find('.progress'));
+        
+        clearInterval(intervalId); // 清除之前的計時器
+        intervalId = setInterval(() => {
+            let current = Math.floor(audio.currentTime);
             let currentSmall = audio.currentTime;
             let minute = Math.floor(current / 60);
             let second = current % 60;
             minute = minute < 10 ? '0' + minute : minute;
             second = second < 10 ? '0' + second : second;
-            time.innerText = `${minute}:${second}`;
+            time.innerText = `${minute}:${second};`
             progresses.forEach(progress => {
-              progress.style.strokeDashoffset = 1414 - (1414 * ((currentSmall / audio.duration) * 100)) / 100;
+                console.log(currentSmall)
+                progress.style.strokeDashoffset = 158;
+                progress.style.strokeDashoffset = 158 - (158 * ((currentSmall / audio.duration) * 100)) / 100;
             })
-          }, 100); // this function run all second
-      
-        });
-        applySwing();
-      }
-    };
-
-    const playMusic = () => {
-      const i = getNextCard();
-      if(i){
-        $(i).find("audio").get(0).play();
-      }
+        }, 100);  
     }
+}
 
+    
+    // pauseCurrentMusic
     const pauseMusic = () => {
       const i = getCurrentCard();
       if(i){
@@ -808,8 +822,8 @@ window.addEventListener("DOMContentLoaded", function () {
         const currentCard = getCurrentCard();
         loadFriends();
         if (currentCard) {
-          swipeRight(currentCard);
           playMusic();
+          swipeRight(currentCard);
           pauseMusic();
           setTimeout(() => {
             shouldHideMainCard();
@@ -835,18 +849,34 @@ window.addEventListener("DOMContentLoaded", function () {
     if(chatBoxUserAvatar) {
       chatBoxUserAvatar.addEventListener('click', function () {
         signUpContainer.classList.remove("signup--hide");
-        const node = document.createElement("div");
-        node.innerHTML = `<div class="main__card-item" style="display: block;" data-id="${selectedContact.uid}" data-name="${selectedContactName}">
-        <div class="avatar" style="display: block; background-image: url(${chatBoxUserAvatar.src})">
-        <audio class="music" controls autoplay style="display: none;">
-          <source src= type="audio/mpeg" class="avatar" style="display: block;">
-        Your browser does not support the audio element.
-        </audio>
-        </div>
-        <span>${selectedContactName}, ${selectedContactName}</span>
-        </div>`
+        if(!detailNode){
+          detailNode = document.createElement("div");
+          detailNode.style.display = "flex";
+          detailNode.style.justifyContent = "center";
+          detailNode.style.alignItems = "center";
+          detailNode.innerHTML = `<div class="main__card-item_detail" style="display: block;" data-id="${selectedContact.uid}" data-name="${selectedContactName}">
+          <div class="avatar" style="display: block; background-image: url(${chatBoxUserAvatar.src})">
+          <audio class="music" controls autoplay style="display: none;">
+            <source src= type="audio/mpeg" class="avatar" style="display: block;">
+          Your browser does not support the audio element.
+          </audio>
+          </div>
+          <span>${selectedContactName}, ${selectedContactName}</span>
+          </div>`
 
-        signUpContainer.appendChild(node);
+          signUpContainer.appendChild(detailNode);
+        }
+        else{
+          detailNode.innerHTML = `<div class="main__card-item_detail" style="display: block;" data-id="${selectedContact.uid}" data-name="${selectedContactName}">
+          <div class="avatar" style="display: block; background-image: url(${chatBoxUserAvatar.src})">
+          <audio class="music" controls autoplay style="display: none;">
+            <source src= type="audio/mpeg" class="avatar" style="display: block;">
+          Your browser does not support the audio element.
+          </audio>
+          </div>
+          <span>${selectedContactName}, ${selectedContactName}</span>
+          </div>`
+        }
       });
     }
 
