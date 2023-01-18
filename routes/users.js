@@ -49,7 +49,7 @@ module.exports = function ({ app, dbConn, upload, constants, uploadFile, getFile
           } else {
             // create a new user if the email did not exist in the sytem.
             const users = [[email, password, fullname, age, avatar, music, gender, ccUid]];
-            const insertSql = "INSERT INTO user_account (user_email, user_password, user_full_name, user_age, user_avatar, user_music_clip, user_gender, user_cometchat_uid) VALUES ?";
+            const insertSql = "INSERT INTO user_account (user_email, user_password, user_full_name, user_age, user_avatar, user_music_clip, user_gender, user_uid) VALUES ?";
             dbConn.query(insertSql, [users], function (err, result) {
               if (err) {
                 res.status(200).jsonp({ message: "Cannot create your account, please try again" });
@@ -78,7 +78,7 @@ module.exports = function ({ app, dbConn, upload, constants, uploadFile, getFile
           user_age: user.user_age,
           user_avatar: user.user_avatar,
           user_music_clip: user.user_music_clip,
-          user_cometchat_uid: user.user_cometchat_uid,
+          user_uid: user.user_uid,
           user_email: user.user_email,
           user_full_name: user.user_full_name,
           user_gender: user.user_gender
@@ -91,7 +91,7 @@ module.exports = function ({ app, dbConn, upload, constants, uploadFile, getFile
   const transformMatchedUsers = (data) => {
     const user = {   
       name: data.user_full_name,
-      uid: data.user_cometchat_uid,
+      uid: data.user_uid,
       avatar: data.user_avatar,
     }
     return user
@@ -101,7 +101,7 @@ module.exports = function ({ app, dbConn, upload, constants, uploadFile, getFile
   app.post('/users/recommend', (req, res) => {
     const { gender, ccUid } = req.body;
     if (gender && ccUid) {
-      const sql = "SELECT * FROM user_account WHERE user_gender = ? AND (user_cometchat_uid NOT IN (SELECT match_request_to FROM match_request WHERE match_request_from = ?) AND user_cometchat_uid NOT IN (SELECT match_request_from FROM match_request WHERE match_request_to = ? AND match_request_status = ?))";
+      const sql = "SELECT * FROM user_account WHERE user_gender = ? AND (user_uid NOT IN (SELECT match_request_to FROM match_request WHERE match_request_from = ?) AND user_uid NOT IN (SELECT match_request_from FROM match_request WHERE match_request_to = ? AND match_request_status = ?))";
       dbConn.query(sql, [gender, ccUid, ccUid, constants.matchRequestStatus.accepted], function (err, result) {
         if (err) {
           res.status(200).jsonp({ message: 'Cannot get your recommended users, please try again' });
@@ -111,7 +111,7 @@ module.exports = function ({ app, dbConn, upload, constants, uploadFile, getFile
         }
       });
     } else {
-      res.status(200).jsonp({ message: "Please provide cometchat uid and user's gender" });
+      res.status(200).jsonp({ message: "Please provide uid and user's gender" });
     }
   });
 
@@ -136,14 +136,14 @@ module.exports = function ({ app, dbConn, upload, constants, uploadFile, getFile
         }
       });
     } else {
-      res.status(200).jsonp({ message: "Please provide cometchat uid and user's gender" });
+      res.status(200).jsonp({ message: "Please provide uid and user's gender" });
     }
   })
 
   app.post('/users/findUser', (req, res) => {
     const {ccUid} = req.body;
     if (ccUid) {
-      const sql = "SELECT * FROM user_account  WHERE user_cometchat_uid = ?";
+      const sql = "SELECT * FROM user_account  WHERE user_uid = ?";
       dbConn.query(sql, [ccUid], function (err, result) {
         if (err) {
           res.status(200).jsonp({ message: 'Cannot get your match users, please try again' });
@@ -153,7 +153,7 @@ module.exports = function ({ app, dbConn, upload, constants, uploadFile, getFile
         }
       });
     } else {
-      res.status(200).jsonp({ message: "Please provide cometchat uid and user's gender" });
+      res.status(200).jsonp({ message: "Please provide uid and user's gender" });
     } 
   })
 };

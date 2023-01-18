@@ -89,7 +89,7 @@ const dbConn = mysql.createConnection({
   user: process.env.DB_USER_NAME || "",
   password: process.env.DB_USER_PASSWORD || "",
   database: process.env.DB_NAME || "",
-  port: process.env.DB_PORT || "",
+  //port: process.env.DB_PORT || "",
 });
 
 var users =[];
