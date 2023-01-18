@@ -7,6 +7,11 @@ const mysql = require("mysql");
 const path = require("path");
 const PORT = process.env.PORT || 8080;
 const app = express();
+const fs = require('fs')
+const util = require('util')
+const unlinkFile = util.promisify(fs.unlink)
+const { uploadFile, getFileStream } = require('./s3')
+
 
 
 
@@ -160,7 +165,7 @@ dbConn.connect(function (err) {
     throw err;
   }
   console.log("Database was connected");
-  require("./routes")({ app, dbConn, upload, constants })
+  require("./routes")({ app, dbConn, upload, constants, uploadFile, getFileStream, unlinkFile})
   app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);
   });

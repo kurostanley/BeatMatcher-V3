@@ -1,13 +1,29 @@
-module.exports = function ({ app, dbConn, upload, constants }) {
+module.exports = function ({ app, dbConn, upload, constants, uploadFile, getFileStream, unlinkFile }) {
+  app.get('/files/:key', (req, res) => {
+    console.log(req.params)
+    const key = req.params.key
+    const readStream = getFileStream(key)
+  
+    readStream.pipe(res)
+  })
+  
+  
   app.post("/users/create", upload.fields([
     { name: "avatar", maxCount: 1 },
     { name: "music", maxCount: 1 },
-  ]), (req, res, next) => {
+  ]), async(req, res, next) => {
     try{
     // validate the avatar. The avatar is requied.
     console.log(req.files)
     console.log(req.files.music)
     console.log(req.files.avatar)
+    
+    const uploadMusic = await uploadFile(req.files.music);
+    const uploadAvatar = await uploadFile(req.files.avatar);
+    console.log("AWS: " + uploadMusic.Key + "," + uploadAvatar.Key)
+    await unlinkFile(req.files.music[0].path)
+    await unlinkFile(req.files.avatar[0].path)
+
 
     const file = req.files;
     if (!file.music[0] || !file.music[0].mimetype.includes("mpeg")) {
@@ -20,8 +36,8 @@ module.exports = function ({ app, dbConn, upload, constants }) {
     });}
     else {
 
-      const avatar = `/img/${file.avatar[0].filename}`;
-      const music = `/music/${file.music[0].filename}`;
+      const avatar = `/files/${file.avatar[0].filename}`;
+      const music = `/files/${file.music[0].filename}`;
       // get user information and check the required fields.
       const { email, password, fullname, age, gender, ccUid } = req.body;
       if (email && password && fullname && age && gender) {
