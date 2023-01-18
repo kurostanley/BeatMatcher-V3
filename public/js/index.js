@@ -698,6 +698,11 @@ window.addEventListener("DOMContentLoaded", function () {
         const time = $(i).find('.time').get(0);
         const progresses = Array.from($(i).find('.progress'));
         
+        // Inital the progress bar
+        progresses.forEach(progress => {
+          progress.style.strokeDashoffset = 158;
+        })
+
         clearInterval(intervalId); // 清除之前的計時器
         intervalId = setInterval(() => {
             let current = Math.floor(audio.currentTime);
@@ -708,8 +713,6 @@ window.addEventListener("DOMContentLoaded", function () {
             second = second < 10 ? '0' + second : second;
             time.innerText = `${minute}:${second};`
             progresses.forEach(progress => {
-                console.log(currentSmall)
-                progress.style.strokeDashoffset = 158;
                 progress.style.strokeDashoffset = 158 - (158 * ((currentSmall / audio.duration) * 100)) / 100;
             })
         }, 100);  
