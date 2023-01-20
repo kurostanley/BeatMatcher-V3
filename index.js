@@ -6,6 +6,7 @@ const multer = require("multer");
 const mysql = require("mysql");
 const path = require("path");
 const PORT = process.env.PORT || 8080;
+const SocketPort = process.env.SocketPort || 3000;
 const app = express();
 const fs = require('fs')
 const util = require('util')

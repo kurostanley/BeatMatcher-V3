@@ -45,8 +45,8 @@ window.addEventListener("DOMContentLoaded", function () {
     const signUpCloseBtn = document.getElementById("signup__close-btn");
     let detailNode = null;
 
-
-    const socket = io("http://localhost:3000");
+    //const socket = io("http://localhost:3000");
+    const socket = io("http://beatmatcher-socket-production.up.railway.app");
 
 
     // function sendMessage(){
