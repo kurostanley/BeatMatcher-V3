@@ -162,6 +162,7 @@ const onAvatarSelected = (input) => {
 };
 
 const resetSignUpForm = () => {
+  wavesurfer.destroy();
   resetAvatarSelection();
   emailInputElement.value = ''
   passwordInputElement.value = ''
@@ -240,9 +241,7 @@ if (signUpBtn) {
       ) {
         console.log({ avatar: avatars[0], music: musics[0], email, password, fullname, age, position })
         registerNewAccount({ avatar: avatars[0], music: musics[0], email, password, fullname, age, position });
-        hideLoading();
       }
-      hideLoading();
 
     }
   });
