@@ -1,6 +1,8 @@
 require('dotenv').config()
 const fs = require('fs')
 const S3 = require('aws-sdk/clients/s3')
+const multer = require('multer')
+const multerS3 = require('multer-s3')
 
 const bucketName = process.env.AWS_BUCKET_NAME
 const region = process.env.AWS_BUCKET_REGION
@@ -13,6 +15,25 @@ const s3 = new S3({
   secretAccessKey,
   endpoint:"https://s3.eu-west-2.amazonaws.com",
 })
+
+const upload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: 'beatmatcher-app',
+    metadata: function (req, file, cb) {
+      cb(null, {fieldName: file.fieldname});
+    },
+    key: function (req, file, cb) {
+      if (file.fieldname === 'avatar') {
+        cb(null, `${file.fieldname}-${Date.now()}.jpg`);
+      } else if (file.fieldname === 'music') {
+        cb(null, `${file.fieldname}-${Date.now()}.mp3`);
+      }
+    }
+  })
+})
+
+exports.upload = upload
 
 // uploads a file to s3
 function uploadFile(file) {

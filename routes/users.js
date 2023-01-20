@@ -18,11 +18,11 @@ module.exports = function ({ app, dbConn, upload, constants, uploadFile, getFile
     console.log(req.files.music)
     console.log(req.files.avatar)
     
-    const uploadMusic = await uploadFile(req.files.music);
-    const uploadAvatar = await uploadFile(req.files.avatar);
-    console.log("AWS: " + uploadMusic.Key + "," + uploadAvatar.Key)
-    await unlinkFile(req.files.music[0].path)
-    await unlinkFile(req.files.avatar[0].path)
+    // const uploadMusic = await uploadFile(req.files.music);
+    // const uploadAvatar = await uploadFile(req.files.avatar);
+    // console.log("AWS: " + uploadMusic.Key + "," + uploadAvatar.Key)
+    // await unlinkFile(req.files.music[0].path)
+    // await unlinkFile(req.files.avatar[0].path)
 
 
     const file = req.files;

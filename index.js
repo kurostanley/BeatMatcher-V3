@@ -10,7 +10,8 @@ const app = express();
 const fs = require('fs')
 const util = require('util')
 const unlinkFile = util.promisify(fs.unlink)
-const { uploadFile, getFileStream } = require('./s3')
+const multerS3 = require('multer-s3')
+const { uploadFile, getFileStream, upload } = require('./s3')
 
 
 
@@ -63,24 +64,24 @@ const constants = {
 // const uploadMusic = multer({ storage: storageMusic });
 
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    if (file.fieldname === 'avatar') {
-      cb(null, "public/img");
-    } else if (file.fieldname === 'music') {
-      cb(null, "public/music");
-    }
-  },
-  filename: function (req, file, cb) {
-    if (file.fieldname === 'avatar') {
-      cb(null, `${file.fieldname}-${Date.now()}.jpg`);
-    } else if (file.fieldname === 'music') {
-      cb(null, `${file.fieldname}-${Date.now()}.mp3`);
-    }
-  },
-});
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     if (file.fieldname === 'avatar') {
+//       cb(null, "public/img");
+//     } else if (file.fieldname === 'music') {
+//       cb(null, "public/music");
+//     }
+//   },
+//   filename: function (req, file, cb) {
+//     if (file.fieldname === 'avatar') {
+//       cb(null, `${file.fieldname}-${Date.now()}.jpg`);
+//     } else if (file.fieldname === 'music') {
+//       cb(null, `${file.fieldname}-${Date.now()}.mp3`);
+//     }
+//   },
+// });
 
-const upload = multer({ storage: storage });
+// const upload = multer({ storage: storage });
 
 
 // create datbase connection
