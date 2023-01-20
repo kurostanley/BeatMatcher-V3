@@ -36,8 +36,8 @@ module.exports = function ({ app, dbConn, upload, constants, uploadFile, getFile
     });}
     else {
 
-      const avatar = `/files/${file.avatar[0].filename}`;
-      const music = `/files/${file.music[0].filename}`;
+      const avatar = `/files/${file.avatar[0].key}`;
+      const music = `/files/${file.music[0].key}`;
       // get user information and check the required fields.
       const { email, password, fullname, age, gender, ccUid } = req.body;
       if (email && password && fullname && age && gender) {
