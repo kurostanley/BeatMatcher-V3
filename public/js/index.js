@@ -46,7 +46,7 @@ window.addEventListener("DOMContentLoaded", function () {
     let detailNode = null;
 
     // const socket = io("http://localhost:8080");
-    const socket = io("https://beatmatcher-production.up.railway.app/");
+    const socket = io("/");
 
 
     // function sendMessage(){
