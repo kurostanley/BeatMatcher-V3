@@ -635,8 +635,8 @@ window.addEventListener("DOMContentLoaded", function () {
         const currentCard = getCurrentCard();
         if (currentCard) {
           swipeLeft(currentCard);
-          playMusic();
           pauseMusic();
+          playMusic();
         } else {
           hideMainCard();
         }

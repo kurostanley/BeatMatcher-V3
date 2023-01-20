@@ -452,7 +452,9 @@ body {
   
   .main__right {
     align-items: center;
-    background: #2C2F33;
+    background-size: 30%;
+    background-image: url("../assist/img/indexbackground.png");
+    background-repeat: repeat;
     display: grid;
     left: 30%;
     min-height: 100vh;
@@ -1103,4 +1105,9 @@ body {
     color: #fd7f32;
     display: block;
     opacity: 70%;
+  }
+
+  .index_backing {
+    position: absolute;
+    height: 800px;
   }
