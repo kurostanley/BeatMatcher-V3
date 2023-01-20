@@ -584,18 +584,8 @@ window.addEventListener("DOMContentLoaded", function () {
               Your browser does not support the audio element.
               </audio>
               <section class="box">
-              <svg>
-                <linearGradient id="gradient">
-                  <stop offset="0%" stop-color="red" />
-                  <stop offset="50%" stop-color="blue" />
-                  <stop offset="100%" stop-color="green" />
-                </linearGradient>
-                <circle class="circle progress" cx="25" cy="25" r="25"></circle>
-                <circle class="circle blur progress" cx="25" cy="25" r="25"></circle>
-                <circle class="circle backcircle" cx="25" cy="25" r="25"></circle>
-              </svg>
               <div class="texts">
-                <span class="time" >00:00</span>
+                <div class="time" >00:00</div>
                 <div class="lyric"></div>
                 <div class="play"></div>
               </div>
@@ -611,18 +601,8 @@ window.addEventListener("DOMContentLoaded", function () {
                 Your browser does not support the audio element. 
               </audio>
               <section class="box">
-              <svg>
-                <linearGradient id="gradient">
-                  <stop offset="0%" stop-color="red" />
-                  <stop offset="50%" stop-color="blue" />
-                  <stop offset="100%" stop-color="green" />
-                </linearGradient>
-                <circle class="circle progress" cx="25" cy="25" r="25"></circle>
-                <circle class="circle blur progress" cx="25" cy="25" r="25"></circle>
-                <circle class="circle backcircle" cx="25" cy="25" r="25"></circle>
-              </svg>
               <div class="texts">
-                <span class="time" >00:00</span>
+                <div class="time" >00:00</div>
                 <div class="lyric"></div>
                 <div class="play"></div>
               </div>
@@ -653,25 +633,28 @@ window.addEventListener("DOMContentLoaded", function () {
 
       audio.addEventListener('play', e => {
         play.style.opacity = '0';
+        time.style.opacity = "70%";
+
       });
 
 
       audio.addEventListener('pause', e => {
         play.style.opacity = '100';
+        time.style.opacity = "0";
       });
   
       intervalId = setInterval(() => {
         let current = Math.floor(audio.currentTime); // time of current playing music
         let currentSmall = audio.currentTime;
         let minute = Math.floor(current / 60);
-        let second = current % 60;
+        let second = 30 - current % 60;
         minute = minute < 10 ? '0' + minute : minute;
         second = second < 10 ? '0' + second : second;
-        time.innerText = `${minute}:${second}`;
-        progresses.forEach(progress => {
-          // magic number : const = 1414/225
-          progress.style.strokeDashoffset = 158 - (158 * ((currentSmall / audio.duration) * 100)) / 100;
-        })
+        time.innerText = `${second}`;
+        // progresses.forEach(progress => {
+        //   // magic number : const = 1414/225
+        //   progress.style.strokeDashoffset = 158 - (158 * ((currentSmall / audio.duration) * 100)) / 100;
+        // })
       }, 100); // this function run all second
 
     }
@@ -698,23 +681,23 @@ window.addEventListener("DOMContentLoaded", function () {
         const time = $(i).find('.time').get(0);
         const progresses = Array.from($(i).find('.progress'));
         
-        // Inital the progress bar
-        progresses.forEach(progress => {
-          progress.style.strokeDashoffset = 158;
-        })
+        // // Inital the progress bar
+        // progresses.forEach(progress => {
+        //   progress.style.strokeDashoffset = 158;
+        // })
 
         clearInterval(intervalId); // 清除之前的計時器
         intervalId = setInterval(() => {
             let current = Math.floor(audio.currentTime);
             let currentSmall = audio.currentTime;
             let minute = Math.floor(current / 60);
-            let second = current % 60;
+            let second = 30 - current % 60;
             minute = minute < 10 ? '0' + minute : minute;
             second = second < 10 ? '0' + second : second;
-            time.innerText = `${minute}:${second};`
-            progresses.forEach(progress => {
-                progress.style.strokeDashoffset = 158 - (158 * ((currentSmall / audio.duration) * 100)) / 100;
-            })
+            time.innerText = `${second}`
+            // progresses.forEach(progress => {
+            //     progress.style.strokeDashoffset = 158 - (158 * ((currentSmall / audio.duration) * 100)) / 100;
+            // })
         }, 100);  
     }
 }

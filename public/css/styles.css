@@ -1098,8 +1098,9 @@ body {
   
   .time {
     position: absolute;
-    top: 15%;
-    font-size: 1.5em;
-    color: rgba(255, 255, 255, .3);
-    display: none;
+    bottom: 20;
+    font-size: 8em;
+    color: #fd7f32;
+    display: block;
+    opacity: 70%;
   }
