@@ -413,6 +413,7 @@ window.addEventListener("DOMContentLoaded", function () {
       createMatchRequest(matchRequestTo, matchRequestReceiver, matchRequestReceiverAvatar);
       setTimeout(() => {
         shouldHideMainCard();
+        $(element).remove();
       }, 1100);
     };
 
@@ -476,7 +477,6 @@ window.addEventListener("DOMContentLoaded", function () {
           }
         });
         applySwing();
-        progressbar()
       }
     };
     let intervalId;
@@ -530,13 +530,16 @@ window.addEventListener("DOMContentLoaded", function () {
         audio.play();
         $(audio).on('play', function() {
           $('.play').css('opacity', '0');
+          $('.time').css('opacity' ,'70%');
         });
           
         $(audio).on('pause', function() {
           $('.play').css('opacity', '100');
+          $('.time').css('opacity' ,'0');
         });
-          
-        $('.play').on('click', function() {
+        console.log($(i).find(".play"))
+        $(i).find(".play").on('click', function() {
+          console.log(audio);
           audio.play();
           $(this).css('opacity', '0');
         });
@@ -605,6 +608,7 @@ window.addEventListener("DOMContentLoaded", function () {
             showMainCard();
             console.log(res.data)
             renderCardList(res.data);
+            progressbar()
           }
         })
         .catch((error) => {
@@ -644,9 +648,9 @@ window.addEventListener("DOMContentLoaded", function () {
         const currentCard = getCurrentCard();
         loadFriends();
         if (currentCard) {
-          playMusic();
           swipeRight(currentCard);
           pauseMusic();
+          playMusic();
           setTimeout(() => {
             shouldHideMainCard();
           }, 1100);
