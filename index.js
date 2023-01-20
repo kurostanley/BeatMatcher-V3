@@ -49,71 +49,68 @@ const dbConn = mysql.createConnection({
   //port: process.env.DB_PORT || "",
 });
 
-// var users =[];
+var users =[];
 
-// const addUser = (userId, socketId) => {
-//   !users.some(user => user.userId === userId) && 
-//     users.push({userId, socketId})
-// }
+const addUser = (userId, socketId) => {
+  !users.some(user => user.userId === userId) && 
+    users.push({userId, socketId})
+}
 
-// const removeUser = (socketId) => {
-//   users = users.filter((user) => user.socketId !== socketId);
-// }
+const removeUser = (socketId) => {
+  users = users.filter((user) => user.socketId !== socketId);
+}
 
-// const getUser = (userId) => {
-//   return users.find((user) => user.userId === userId);
-// };
+const getUser = (userId) => {
+  return users.find((user) => user.userId === userId);
+};
 
-// io.sockets.on('connection', function (socket) {
-//   console.log("a user connected.")
+io.sockets.on('connection', function (socket) {
+  console.log("a user connected.")
    
-//   // take userId and sock.id from user
-//   socket.on('addUser', (userId) => {
-//     addUser(userId, socket.id);
-//     io.emit("getUsers", users);
-//   })
+  // take userId and sock.id from user
+  socket.on('addUser', (userId) => {
+    addUser(userId, socket.id);
+    io.emit("getUsers", users);
+  })
 
-//   //send and get message
-//   socket.on("sendMessage", ({ senderId, senderName, receiverId, text, receiverAvatar }) => {
-//     const user = getUser(receiverId);
-//     if(user){
-//       io.to(user.socketId).emit("getMessage", {
-//         senderId,
-//         senderName,
-//         receiverId,
-//         text,
-//         receiverAvatar
-//       });
-//       console.log("message send")
-//     }
-//   });
+  //send and get message
+  socket.on("sendMessage", ({ senderId, senderName, receiverId, text, receiverAvatar }) => {
+    const user = getUser(receiverId);
+    if(user){
+      io.to(user.socketId).emit("getMessage", {
+        senderId,
+        senderName,
+        receiverId,
+        text,
+        receiverAvatar
+      });
+      console.log("message send")
+    }
+  });
 
-//   //get new like from someone
-//   socket.on("match", ({ senderId, senderName, senderAvatar, receiverId, receiverName }) => {
-//     const user = getUser(receiverId);
-//     if(user){
-//       io.to(user.socketId).emit("getMatch", {
-//         senderId,
-//         senderName,
-//         senderAvatar,
-//         receiverId,
-//         receiverName
-//       });
-//     }
-//   });
+  //get new like from someone
+  socket.on("match", ({ senderId, senderName, senderAvatar, receiverId, receiverName }) => {
+    const user = getUser(receiverId);
+    if(user){
+      io.to(user.socketId).emit("getMatch", {
+        senderId,
+        senderName,
+        senderAvatar,
+        receiverId,
+        receiverName
+      });
+    }
+  });
 
 
-//   //when disconnect
-//   socket.on("disconnect", () => {
-//     console.log("a user disconnected!");
-//     removeUser(socket.id);
-//     io.emit("getUsers", users);
-//   });
-// })
+  //when disconnect
+  socket.on("disconnect", () => {
+    console.log("a user disconnected!");
+    removeUser(socket.id);
+    io.emit("getUsers", users);
+  });
+})
 
-// server.listen(3000, () => {
-//   console.log(`Socket.io server listening on port 3000`);
-// });
 
 
 dbConn.connect(function (err) {
@@ -123,7 +120,11 @@ dbConn.connect(function (err) {
   }
   console.log("Database was connected");
   require("./routes")({ app, dbConn, upload, constants, uploadFile, getFileStream, unlinkFile})
-  app.listen(PORT, () => {
-    console.log(`Server is listening on port ${PORT}`);
+  // app.listen(PORT, () => {
+  //   console.log(`Server is listening on port ${PORT}`);
+  // });
+  server.listen(PORT, () => {
+    console.log(`server listening on port ${PORT}`);
   });
+  
 });
