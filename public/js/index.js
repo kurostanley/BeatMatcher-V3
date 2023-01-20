@@ -448,6 +448,16 @@ window.addEventListener("DOMContentLoaded", function () {
               Your browser does not support the audio element.
               </audio>
               <section class="box">
+              <svg>
+              <linearGradient id="gradient">
+                <stop offset="0%" stop-color="red" />
+                <stop offset="50%" stop-color="blue" />
+                <stop offset="100%" stop-color="green" />
+              </linearGradient>
+                <circle class="circle progress" cx="25" cy="25" r="25"></circle>
+                <circle class="circle blur progress" cx="25" cy="25" r="25"></circle>
+                <circle class="circle backcircle" cx="25" cy="25" r="25"></circle>
+              </svg>
               <div class="texts">
                 <div class="time" >00:00</div>
                 <div class="lyric"></div>
@@ -465,6 +475,16 @@ window.addEventListener("DOMContentLoaded", function () {
                 Your browser does not support the audio element. 
               </audio>
               <section class="box">
+              <svg>
+                <linearGradient id="gradient">
+                  <stop offset="0%" stop-color="red" />
+                  <stop offset="50%" stop-color="blue" />
+                  <stop offset="100%" stop-color="green" />
+                </linearGradient>
+                  <circle class="circle progress" cx="25" cy="25" r="25"></circle>
+                  <circle class="circle blur progress" cx="25" cy="25" r="25"></circle>
+                  <circle class="circle backcircle" cx="25" cy="25" r="25"></circle>
+              </svg>
               <div class="texts">
                 <div class="time" >00:00</div>
                 <div class="lyric"></div>
@@ -487,7 +507,6 @@ window.addEventListener("DOMContentLoaded", function () {
       const play = document.querySelector('.play');
       const time = document.querySelector('.time');
       const progresses = Array.from(document.querySelectorAll('.progress'));
-
       play.addEventListener('click', e => {
         audio.play();
         play.style.opacity = '0';
@@ -497,7 +516,6 @@ window.addEventListener("DOMContentLoaded", function () {
       audio.addEventListener('play', e => {
         play.style.opacity = '0';
         time.style.opacity = "70%";
-
       });
 
 
@@ -505,7 +523,7 @@ window.addEventListener("DOMContentLoaded", function () {
         play.style.opacity = '100';
         time.style.opacity = "0";
       });
-  
+      
       intervalId = setInterval(() => {
         let current = Math.floor(audio.currentTime); // time of current playing music
         let currentSmall = audio.currentTime;
@@ -514,11 +532,12 @@ window.addEventListener("DOMContentLoaded", function () {
         minute = minute < 10 ? '0' + minute : minute;
         second = second < 10 ? '0' + second : second;
         time.innerText = `${second}`;
-        // progresses.forEach(progress => {
-        //   // magic number : const = 1414/225
-        //   progress.style.strokeDashoffset = 158 - (158 * ((currentSmall / audio.duration) * 100)) / 100;
-        // })
+        progresses.forEach(progress => {
+          // magic number : const = 1414/225
+          progress.style.strokeDashoffset = 158 - (158 * ((currentSmall / 30) * 100)) / 100;
+        })
       }, 100); // this function run all second
+
 
     }
 
@@ -527,33 +546,18 @@ window.addEventListener("DOMContentLoaded", function () {
       const i = getNextCard();
       if(i){
         let audio = $(i).find("audio").get(0);
-        audio.play();
-        $(audio).on('play', function() {
-          $('.play').css('opacity', '0');
-          $('.time').css('opacity' ,'70%');
-        });
-          
-        $(audio).on('pause', function() {
-          $('.play').css('opacity', '100');
-          $('.time').css('opacity' ,'0');
-        });
-        console.log($(i).find(".play"))
-        $(i).find(".play").on('click', function() {
-          console.log(audio);
-          audio.play();
-          $(this).css('opacity', '0');
-        });
-
         const time = $(i).find('.time').get(0);
-        const progresses = Array.from($(i).find('.progress'));
-        
-        // // Inital the progress bar
-        // progresses.forEach(progress => {
-        //   progress.style.strokeDashoffset = 158;
-        // })
+        const progresses = Array.from($(i).find('.progress'));  
 
+        audio.play();
+
+        // Inital the progress bar
         clearInterval(intervalId); // 清除之前的計時器
-        intervalId = setInterval(() => {
+        progresses.forEach(progress => {
+          progress.style.strokeDashoffset = 0;
+        })
+        
+        setInterval(() => {
             let current = Math.floor(audio.currentTime);
             let currentSmall = audio.currentTime;
             let minute = Math.floor(current / 60);
@@ -561,10 +565,26 @@ window.addEventListener("DOMContentLoaded", function () {
             minute = minute < 10 ? '0' + minute : minute;
             second = second < 10 ? '0' + second : second;
             time.innerText = `${second}`
-            // progresses.forEach(progress => {
-            //     progress.style.strokeDashoffset = 158 - (158 * ((currentSmall / audio.duration) * 100)) / 100;
-            // })
-        }, 100);  
+            progresses.forEach(progress => {
+                progress.style.strokeDashoffset = 158 - (158 * ((currentSmall / 30) * 100)) / 100;
+            })
+        }, 100);    
+
+        $(audio).on('play', function() {
+          $('.play').css('opacity', '0');
+          $('.time').css('opacity' ,'70%');  
+        });
+          
+        $(audio).on('pause', function() {
+          $('.play').css('opacity', '100');
+          $('.time').css('opacity' ,'0');
+        });
+        
+        $(i).find(".play").on('click', function() {
+          console.log(audio);
+          audio.play();
+          $(this).css('opacity', '0');
+        });
     }
 }
 

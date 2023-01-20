@@ -1046,7 +1046,7 @@ body {
   .circle {
     fill: none;
     stroke: url(#gradient);
-    stroke-width: 7;
+    stroke-width: 4;
     stroke-linecap: round;
   }
   
@@ -1101,7 +1101,7 @@ body {
   .time {
     position: absolute;
     bottom: 20;
-    font-size: 8em;
+    font-size: 1.5em;
     color: #fd7f32;
     display: block;
     opacity: 70%;
