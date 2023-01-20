@@ -63,21 +63,6 @@ if (createNewAccountBtn) {
  * @returns valid, or not.
  */
 function validateNewAccount({ avatars, musics, email, password, confirmPassword, fullname, age, position }) {
-  // if (!avatars || avatars.length === 0) {
-  //   alert("Please select avatar");
-  //   return false;
-  // }
-  // if (avatars.length > 1) {
-  //   alert("Please select a single image");
-  //   return false;
-  // }
-  // const avatar = avatars[0];
-  // console.log(avatar);
-  // if (avatar && !avatar.type.includes("mpeg")) {
-  //   alert("Your avatar must be jpeg format");
-  //   return false;
-  // }
-
   // Validate Avatar
   if (!avatars || avatars.length === 0) {
     alert("Please select avatar");
@@ -210,27 +195,6 @@ const registerNewAccount = ({ avatar, music, email, password, fullname, age, pos
         alert(res.data.message);
       } 
       else if (res && res.data && res.data.insertId) {
-        // const user = new CometChat.User(userUuid);
-        // user.setName(fullname);
-        // user.setAvatar(`${window.location.origin}${res.data.avatar}`);
-        // const appSetting = new CometChat.AppSettingsBuilder()
-        //   .subscribePresenceForAllUsers()
-        //   .setRegion(config.CometChatRegion)
-        //   .build();
-        // CometChat.init(config.CometChatAppId, appSetting).then(
-        //   () => {
-        //     CometChat.createUser(user, config.CometChatAuthKey).then(
-        //       (user) => {
-        //         alert("You account has been created successfully");
-        //       },
-        //       (error) => {
-        //       }
-        //     );
-        //   },
-        //   (error) => {
-        //     // Check the reason for error and take appropriate action.
-        //   }
-        // );
         hideLoading();
         resetSignUpForm();
         hideSignUp();
@@ -311,29 +275,13 @@ if (loginBtn) {
         .post("/login", { email, password })
         .then((res) => {
           if (res && res.data && res.data.uid) {
-            // const appSetting = new CometChat.AppSettingsBuilder()
-            //   .subscribePresenceForAllUsers()
-            //   .setRegion(config.CometChatRegion)
-            //   .build();
-            // CometChat.init(config.CometChatAppId, appSetting).then(
-            //   () => {
-            //     // You can now call login function.
-            //     CometChat.login(res.data.uid, config.CometChatAuthKey).then(
-            //       (loggedInUser) => {
-                    // hide loading.
-                    hideLoading();
-                    // store logged in user in the local storage.
-                    localStorage.setItem("auth", JSON.stringify({ uid: res.data.uid, avatar: res.data.avatar, 
-                      name: res.data.name, position: res.data.position }));
-                    // redirect to home page.
-                     window.location.href = "/";
-            //       }
-            //     );
-            //   },
-            //   (error) => {
-            //     // Check the reason for error and take appropriate action.
-            //   }
-            // );
+            // hide loading.
+            hideLoading();
+            // store logged in user in the local storage.
+            localStorage.setItem("auth", JSON.stringify({ uid: res.data.uid, avatar: res.data.avatar, 
+              name: res.data.name, position: res.data.position }));
+            // redirect to home page.
+              window.location.href = "/";
           } else {
             // hide loading.
             hideLoading();
