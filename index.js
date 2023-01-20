@@ -39,51 +39,6 @@ const constants = {
 };
 
 
-// // config multers for picture.
-// const storagePic = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     cb(null, "public/img");
-//   },
-//   filename: function (req, file, cb) {
-//     cb(null, `${file.fieldname}-${Date.now()}.jpg`);
-//   },
-// });
-
-// const uploadPic = multer({ storage: storagePic });
-
-// // config multers for music.
-// const storageMusic = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     cb(null, "public/music");
-//   },
-//   filename: function (req, file, cb) {
-//     cb(null, `${file.fieldname}-${Date.now()}.mp3`);
-//   },
-// });
-
-// const uploadMusic = multer({ storage: storageMusic });
-
-
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     if (file.fieldname === 'avatar') {
-//       cb(null, "public/img");
-//     } else if (file.fieldname === 'music') {
-//       cb(null, "public/music");
-//     }
-//   },
-//   filename: function (req, file, cb) {
-//     if (file.fieldname === 'avatar') {
-//       cb(null, `${file.fieldname}-${Date.now()}.jpg`);
-//     } else if (file.fieldname === 'music') {
-//       cb(null, `${file.fieldname}-${Date.now()}.mp3`);
-//     }
-//   },
-// });
-
-// const upload = multer({ storage: storage });
-
-
 // create datbase connection
 const dbConn = mysql.createConnection({
   host: process.env.DB_HOST || "",
@@ -93,71 +48,71 @@ const dbConn = mysql.createConnection({
   //port: process.env.DB_PORT || "",
 });
 
-var users =[];
+// var users =[];
 
-const addUser = (userId, socketId) => {
-  !users.some(user => user.userId === userId) && 
-    users.push({userId, socketId})
-}
+// const addUser = (userId, socketId) => {
+//   !users.some(user => user.userId === userId) && 
+//     users.push({userId, socketId})
+// }
 
-const removeUser = (socketId) => {
-  users = users.filter((user) => user.socketId !== socketId);
-}
+// const removeUser = (socketId) => {
+//   users = users.filter((user) => user.socketId !== socketId);
+// }
 
-const getUser = (userId) => {
-  return users.find((user) => user.userId === userId);
-};
+// const getUser = (userId) => {
+//   return users.find((user) => user.userId === userId);
+// };
 
-io.sockets.on('connection', function (socket) {
-  console.log("a user connected.")
+// io.sockets.on('connection', function (socket) {
+//   console.log("a user connected.")
    
-  // take userId and sock.id from user
-  socket.on('addUser', (userId) => {
-    addUser(userId, socket.id);
-    io.emit("getUsers", users);
-  })
+//   // take userId and sock.id from user
+//   socket.on('addUser', (userId) => {
+//     addUser(userId, socket.id);
+//     io.emit("getUsers", users);
+//   })
 
-  //send and get message
-  socket.on("sendMessage", ({ senderId, senderName, receiverId, text, receiverAvatar }) => {
-    const user = getUser(receiverId);
-    if(user){
-      io.to(user.socketId).emit("getMessage", {
-        senderId,
-        senderName,
-        receiverId,
-        text,
-        receiverAvatar
-      });
-      console.log("message send")
-    }
-  });
+//   //send and get message
+//   socket.on("sendMessage", ({ senderId, senderName, receiverId, text, receiverAvatar }) => {
+//     const user = getUser(receiverId);
+//     if(user){
+//       io.to(user.socketId).emit("getMessage", {
+//         senderId,
+//         senderName,
+//         receiverId,
+//         text,
+//         receiverAvatar
+//       });
+//       console.log("message send")
+//     }
+//   });
 
-  //get new like from someone
-  socket.on("match", ({ senderId, senderName, senderAvatar, receiverId, receiverName }) => {
-    const user = getUser(receiverId);
-    if(user){
-      io.to(user.socketId).emit("getMatch", {
-        senderId,
-        senderName,
-        senderAvatar,
-        receiverId,
-        receiverName
-      });
-    }
-  });
+//   //get new like from someone
+//   socket.on("match", ({ senderId, senderName, senderAvatar, receiverId, receiverName }) => {
+//     const user = getUser(receiverId);
+//     if(user){
+//       io.to(user.socketId).emit("getMatch", {
+//         senderId,
+//         senderName,
+//         senderAvatar,
+//         receiverId,
+//         receiverName
+//       });
+//     }
+//   });
 
 
-  //when disconnect
-  socket.on("disconnect", () => {
-    console.log("a user disconnected!");
-    removeUser(socket.id);
-    io.emit("getUsers", users);
-  });
-})
+//   //when disconnect
+//   socket.on("disconnect", () => {
+//     console.log("a user disconnected!");
+//     removeUser(socket.id);
+//     io.emit("getUsers", users);
+//   });
+// })
 
-server.listen(3000, () => {
-  console.log(`Socket.io server listening on port 3000`);
-});
+// server.listen(3000, () => {
+//   console.log(`Socket.io server listening on port 3000`);
+// });
 
 
 dbConn.connect(function (err) {
