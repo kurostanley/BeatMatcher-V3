@@ -16,7 +16,7 @@ const passwordInputElement = document.getElementById("signup__password");
 const confirmPasswordInputElement = document.getElementById("signup__confirm-password");
 const fullNameInputElement = document.getElementById("signup__fullname");
 const ageInputElement = document.getElementById("signup__age");
-const genderSelectElement = document.getElementById("signup__gender");
+const positionSelectElement = document.getElementById("signup__position");
 
 const emailLoginInputElement = document.getElementById("login__email");
 const passwordLoginInputElement = document.getElementById("login__password");
@@ -62,7 +62,7 @@ if (createNewAccountBtn) {
  * @param {*} object - user's information that needs to be validated.
  * @returns valid, or not.
  */
-function validateNewAccount({ avatars, musics, email, password, confirmPassword, fullname, age, gender }) {
+function validateNewAccount({ avatars, musics, email, password, confirmPassword, fullname, age, position }) {
   // if (!avatars || avatars.length === 0) {
   //   alert("Please select avatar");
   //   return false;
@@ -138,8 +138,8 @@ function validateNewAccount({ avatars, musics, email, password, confirmPassword,
     alert("Please input your age, your age must be a number");
     return false;
   }
-  if (validator.isEmpty(gender)) {
-    alert("Please input your gender");
+  if (validator.isEmpty(position)) {
+    alert("Please input your position");
     return false;
   }
   return true;
@@ -183,10 +183,10 @@ const resetSignUpForm = () => {
   confirmPasswordInputElement.value = ''
   fullNameInputElement.value = ''
   ageInputElement.value = ''
-  genderSelectElement.value = 'Male'
+  positionSelectElement.value = 'Producer'
 };
 
-const registerNewAccount = ({ avatar, music, email, password, fullname, age, gender }) => {
+const registerNewAccount = ({ avatar, music, email, password, fullname, age, position }) => {
   showLoading();
   const userUuid = uuid.v4();
   const form = new FormData();
@@ -195,7 +195,7 @@ const registerNewAccount = ({ avatar, music, email, password, fullname, age, gen
   form.append("email", email);
   form.append("password", password);
   form.append("age", age);
-  form.append("gender", gender);
+  form.append("position", position);
   form.append("ccUid", userUuid);
   form.append("fullname", fullname);
   for (const pair of form.entries()) {
@@ -247,7 +247,7 @@ const registerNewAccount = ({ avatar, music, email, password, fullname, age, gen
 // add event for sign up button.
 if (signUpBtn) {
   signUpBtn.addEventListener("click", async function () {
-    if (emailInputElement && passwordInputElement && confirmPasswordInputElement && fullNameInputElement && ageInputElement && genderSelectElement) {
+    if (emailInputElement && passwordInputElement && confirmPasswordInputElement && fullNameInputElement && ageInputElement && positionSelectElement) {
       showLoading();
 
       wavesurfer.pause();
@@ -270,12 +270,12 @@ if (signUpBtn) {
       const confirmPassword = confirmPasswordInputElement.value;
       const fullname = fullNameInputElement.value;
       const age = ageInputElement.value;
-      const gender = genderSelectElement.value;
+      const position = positionSelectElement.value;
       if (
-        validateNewAccount({ avatars, musics, email, password, confirmPassword, fullname, age, gender })
+        validateNewAccount({ avatars, musics, email, password, confirmPassword, fullname, age, position })
       ) {
-        console.log({ avatar: avatars[0], music: musics[0], email, password, fullname, age, gender })
-        registerNewAccount({ avatar: avatars[0], music: musics[0], email, password, fullname, age, gender });
+        console.log({ avatar: avatars[0], music: musics[0], email, password, fullname, age, position })
+        registerNewAccount({ avatar: avatars[0], music: musics[0], email, password, fullname, age, position });
         hideLoading();
       }
       hideLoading();
@@ -324,7 +324,7 @@ if (loginBtn) {
                     hideLoading();
                     // store logged in user in the local storage.
                     localStorage.setItem("auth", JSON.stringify({ uid: res.data.uid, avatar: res.data.avatar, 
-                      name: res.data.name, gender: res.data.gender }));
+                      name: res.data.name, position: res.data.position }));
                     // redirect to home page.
                      window.location.href = "/";
             //       }

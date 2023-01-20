@@ -39,8 +39,8 @@ module.exports = function ({ app, dbConn, upload, constants, uploadFile, getFile
       const avatar = `/files/${file.avatar[0].key}`;
       const music = `/files/${file.music[0].key}`;
       // get user information and check the required fields.
-      const { email, password, fullname, age, gender, ccUid } = req.body;
-      if (email && password && fullname && age && gender) {
+      const { email, password, fullname, age, position, ccUid } = req.body;
+      if (email && password && fullname && age && position) {
         // validate the email existed in the system, or not.
         const sql = "SELECT * FROM user_account WHERE user_email = ?";
         dbConn.query(sql, [email], function (err, result) {
@@ -48,8 +48,8 @@ module.exports = function ({ app, dbConn, upload, constants, uploadFile, getFile
             res.status(200).jsonp({ message: 'The email existed in the system' });
           } else {
             // create a new user if the email did not exist in the sytem.
-            const users = [[email, password, fullname, age, avatar, music, gender, ccUid]];
-            const insertSql = "INSERT INTO user_account (user_email, user_password, user_full_name, user_age, user_avatar, user_music_clip, user_gender, user_uid) VALUES ?";
+            const users = [[email, password, fullname, age, avatar, music, position, ccUid]];
+            const insertSql = "INSERT INTO user_account (user_email, user_password, user_full_name, user_age, user_avatar, user_music_clip, user_position, user_uid) VALUES ?";
             dbConn.query(insertSql, [users], function (err, result) {
               if (err) {
                 res.status(200).jsonp({ message: "Cannot create your account, please try again" });
@@ -81,7 +81,7 @@ module.exports = function ({ app, dbConn, upload, constants, uploadFile, getFile
           user_uid: user.user_uid,
           user_email: user.user_email,
           user_full_name: user.user_full_name,
-          user_gender: user.user_gender
+          user_position: user.user_position
         }
       });
     }
@@ -99,10 +99,10 @@ module.exports = function ({ app, dbConn, upload, constants, uploadFile, getFile
 
 
   app.post('/users/recommend', (req, res) => {
-    const { gender, ccUid } = req.body;
-    if (gender && ccUid) {
-      const sql = "SELECT * FROM user_account WHERE user_gender = ? AND (user_uid NOT IN (SELECT match_request_to FROM match_request WHERE match_request_from = ?) AND user_uid NOT IN (SELECT match_request_from FROM match_request WHERE match_request_to = ? AND match_request_status = ?))";
-      dbConn.query(sql, [gender, ccUid, ccUid, constants.matchRequestStatus.accepted], function (err, result) {
+    const { position, ccUid } = req.body;
+    if (position && ccUid) {
+      const sql = "SELECT * FROM user_account WHERE user_position = ? AND (user_uid NOT IN (SELECT match_request_to FROM match_request WHERE match_request_from = ?) AND user_uid NOT IN (SELECT match_request_from FROM match_request WHERE match_request_to = ? AND match_request_status = ?))";
+      dbConn.query(sql, [position, ccUid, ccUid, constants.matchRequestStatus.accepted], function (err, result) {
         if (err) {
           res.status(200).jsonp({ message: 'Cannot get your recommended users, please try again' });
         } else {
@@ -111,7 +111,7 @@ module.exports = function ({ app, dbConn, upload, constants, uploadFile, getFile
         }
       });
     } else {
-      res.status(200).jsonp({ message: "Please provide uid and user's gender" });
+      res.status(200).jsonp({ message: "Please provide uid and user's position" });
     }
   });
 
@@ -136,7 +136,7 @@ module.exports = function ({ app, dbConn, upload, constants, uploadFile, getFile
         }
       });
     } else {
-      res.status(200).jsonp({ message: "Please provide uid and user's gender" });
+      res.status(200).jsonp({ message: "Please provide uid and user's position" });
     }
   })
 
@@ -153,7 +153,7 @@ module.exports = function ({ app, dbConn, upload, constants, uploadFile, getFile
         }
       });
     } else {
-      res.status(200).jsonp({ message: "Please provide uid and user's gender" });
+      res.status(200).jsonp({ message: "Please provide uid and user's position" });
     } 
   })
 };

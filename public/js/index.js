@@ -751,7 +751,7 @@ window.addEventListener("DOMContentLoaded", function () {
     const loadRecommendedUsers = () => {
       axios
         .post("/users/recommend", {
-          gender: authenticatedUser.gender === "Male" ? "Female" : "Male",
+          position: authenticatedUser.position === "Producer" ? "Rapper/Singer/Songwriter" : "Producer",
           ccUid: authenticatedUser.uid,
         })
         .then((res) => {
