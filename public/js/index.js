@@ -577,7 +577,7 @@ window.addEventListener("DOMContentLoaded", function () {
         const cardList = document.getElementById("main__card-item-container");
         recommendedUsers.forEach((user, index) => {
           if (index === 0) {
-            cardList.innerHTML += `<div class="main__card-item" style="display: block;" data-id="${user.user_cometchat_uid}" data-name="${user.user_full_name}">
+            cardList.innerHTML += `<div class="main__card-item" style="display: block;" data-id="${user.user_uid}" data-name="${user.user_full_name}">
               <div class="avatar" style="display: block; background-image: url(${user.user_avatar})">
               <audio class="music" controls autoplay style="display: none;">
                 <source src=${user.user_music_clip} type="audio/mpeg" class="avatar" style="display: block;">
@@ -604,7 +604,7 @@ window.addEventListener("DOMContentLoaded", function () {
               <span>${user.user_full_name}, ${user.user_age}</span>
             </div>`;
             } else {
-            cardList.innerHTML += `<div class="main__card-item" data-id="${user.user_cometchat_uid}" data-name="${user.user_full_name}">
+            cardList.innerHTML += `<div class="main__card-item" data-id="${user.user_uid}" data-name="${user.user_full_name}">
               <div class="avatar" style="display: block; background-image: url(${user.user_avatar})">
               <audio class="music" controls style="display: none;">
                 <source src=${user.user_music_clip} type="audio/mpeg" class="avatar" style="display: block;">
