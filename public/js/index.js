@@ -450,9 +450,9 @@ window.addEventListener("DOMContentLoaded", function () {
               <section class="box">
               <svg>
               <linearGradient id="gradient">
-                <stop offset="0%" stop-color="red" />
-                <stop offset="50%" stop-color="blue" />
-                <stop offset="100%" stop-color="green" />
+                <stop offset="0%" stop-color="#FF6200" />
+                <stop offset="50%" stop-color="#D7FF04" />
+                <stop offset="100%" stop-color="#39FF14" />
               </linearGradient>
                 <circle class="circle progress" cx="25" cy="25" r="25"></circle>
                 <circle class="circle blur progress" cx="25" cy="25" r="25"></circle>
@@ -477,9 +477,9 @@ window.addEventListener("DOMContentLoaded", function () {
               <section class="box">
               <svg>
                 <linearGradient id="gradient">
-                  <stop offset="0%" stop-color="red" />
-                  <stop offset="50%" stop-color="blue" />
-                  <stop offset="100%" stop-color="green" />
+                  <stop offset="0%" stop-color="#FF6200" />
+                  <stop offset="50%" stop-color="#D7FF04" />
+                  <stop offset="100%" stop-color="#39FF14" />
                 </linearGradient>
                   <circle class="circle progress" cx="25" cy="25" r="25"></circle>
                   <circle class="circle blur progress" cx="25" cy="25" r="25"></circle>

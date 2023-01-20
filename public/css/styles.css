@@ -1102,7 +1102,7 @@ body {
     position: absolute;
     bottom: 20;
     font-size: 1.5em;
-    color: #fd7f32;
+    color: lightgreen;
     display: block;
     opacity: 70%;
   }
