@@ -7,7 +7,7 @@ BeatMatcher is a full stack application that connects songwriters with beatmaker
 Link: https://beatmatcher-production.up.railway.app/
 
 ## Features
-- A Tinder-style matching system that allows users to find the most suitable collaborator for their next project.
+- A Tinder-style matching system that allows users to find the most suitable collaborator for their next project with 30 secs music clips.
 - Real-time messaging and notifications using the socket.io framework, so users can communicate in real-time.
 - Multer for file uploads, making it easy for users to share their work with others.
 - In-app audio editing using Wavesurfer.js, which allows users to visually manipulate and edit audio files within the application.
