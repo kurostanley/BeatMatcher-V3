@@ -424,6 +424,7 @@ window.addEventListener("DOMContentLoaded", function () {
       $(element).next().removeClass('rotate-left rotate-right').fadeIn(400);
       setTimeout(() => {
         shouldHideMainCard();
+        $(element).remove();
       }, 1100);
     };
 
@@ -666,7 +667,6 @@ window.addEventListener("DOMContentLoaded", function () {
     if (likeBtn) {
       likeBtn.addEventListener('click', function () {
         const currentCard = getCurrentCard();
-        loadFriends();
         if (currentCard) {
           swipeRight(currentCard);
           pauseMusic();
