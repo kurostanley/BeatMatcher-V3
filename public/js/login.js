@@ -45,7 +45,9 @@ if (signUpCloseBtn) {
   signUpCloseBtn.addEventListener("click", function () {
     resetAvatarSelection();
     hideSignUp();
-    wavesurfer.destroy();
+    if(audioInputElement.files.length != 0){
+      wavesurfer.destroy();
+    }
     document.getElementById("audio-buttons").classList.remove("w3-show")
     document.getElementById("audio-buttons").classList.add("w3-hide")
   });
@@ -162,7 +164,9 @@ const onAvatarSelected = (input) => {
 };
 
 const resetSignUpForm = () => {
-  wavesurfer.destroy();
+  if(audioInputElement.files.length != 0){
+    wavesurfer.destroy();
+  }
   resetAvatarSelection();
   emailInputElement.value = ''
   passwordInputElement.value = ''

@@ -119,7 +119,7 @@ window.addEventListener("DOMContentLoaded", function () {
             senderName: authenticatedUser.name,
             receiverId: selectedContact.uid,
             text: inputMessage,
-            receiverAvatar: chatBoxUserAvatar.src
+            receiverAvatar: authenticatedUser.avatar
           });
           console.log(selectedContactAvatar)
           axios
