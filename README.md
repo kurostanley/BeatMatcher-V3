@@ -2,7 +2,6 @@
 
 ![image alt text](./public/assist/img/logo.png)
 
-
 BeatMatcher is a full stack application that connects songwriters with beatmakers, allowing them to find the most suitable match for their next collaboration. The app is developed using Node.js, HTML, CSS, and JavaScript, and is designed to be easy to use, with a modern, user-friendly interface.
 
 ## Features
@@ -13,6 +12,9 @@ BeatMatcher is a full stack application that connects songwriters with beatmaker
 - A MySQL database on AWS RDS for user account management, so users can easily create and manage their accounts.
 - S3 for storage of files, ensuring that users' files are safe and secure.
 - Deployed the application on a Railway cloud server for easy access and scalability
+
+![image alt text](./public/assist/img/demo1.png)
+![image alt text](./public/assist/img/demo2.png)
 
 ## Usage
 
