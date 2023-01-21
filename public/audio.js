@@ -18,7 +18,6 @@ async function readAndDecodeAudio() {
 	await new AudioContext().decodeAudioData(arrBuffer)
 				.then((res) => {
 					audioBuffer = res;
-					console.log(audioBuffer);
 				})
 				.catch((err) => {
 					window.alert("Can't decode Audio");
@@ -206,7 +205,6 @@ function loadAudio() {
 			start: 0,
 			end: 30,	  
 		});
-    	console.log(intro);
     	if(intro != undefined) {
     		intro.nextStep();
     	}
@@ -221,13 +219,10 @@ function loadAudio() {
 	});
 	wavesurfer.on('region-created', function(newRegion) {
 		var audioTracks = document.getElementById("audio-tracks").tBodies[0];
-		console.log(audioTracks.childNodes);
 		// var tableRow = createAudioRow(new Array(newRegion.id, newRegion.start, newRegion.end));
 		// audioTracks.appendChild(tableRow);
 		songId = newRegion.id;
-		console.log(newRegion);
 	 	// showAndHideMergeOption();
-		console.log('hi')
 		wavesurfer.play(newRegion.start, newRegion.end)
 	});
 	wavesurfer.on('region-update-end', function(newRegion) {

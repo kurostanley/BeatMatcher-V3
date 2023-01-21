@@ -11,6 +11,7 @@ const selectedAvatar = document.getElementById("signup__selected-avatar");
 const avatarClose = document.getElementById("signup__avatar-close");
 const avatarLabel = document.getElementById("signup__avatar-label");
 const avatarInputElement = document.getElementById("signup__avatar");
+const audioInputElement = document.getElementById("audio-file");
 const emailInputElement = document.getElementById("signup__email");
 const passwordInputElement = document.getElementById("signup__password");
 const confirmPasswordInputElement = document.getElementById("signup__confirm-password");
@@ -73,7 +74,6 @@ function validateNewAccount({ avatars, musics, email, password, confirmPassword,
     return false;
   }
   const avatar = avatars[0];
-  console.log(avatar.type)
   if (avatar && !avatar.type.includes("jpeg")) {
     alert("Your avatar must be jpeg format");
     return false;
@@ -184,9 +184,6 @@ const registerNewAccount = ({ avatar, music, email, password, fullname, age, pos
   form.append("position", position);
   form.append("ccUid", userUuid);
   form.append("fullname", fullname);
-  for (const pair of form.entries()) {
-    console.log(`${pair[0]}, ${pair[1]}`);
-  }
   
   
   axios
@@ -212,24 +209,11 @@ const registerNewAccount = ({ avatar, music, email, password, fullname, age, pos
 // add event for sign up button.
 if (signUpBtn) {
   signUpBtn.addEventListener("click", async function () {
-    if (emailInputElement && passwordInputElement && confirmPasswordInputElement && fullNameInputElement && ageInputElement && positionSelectElement) {
-      showLoading();
+    console.log(audioInputElement.files)
+    if (avatarInputElement && audioInputElement && emailInputElement && passwordInputElement && confirmPasswordInputElement && fullNameInputElement && ageInputElement && positionSelectElement) {
 
-      wavesurfer.pause();
-      
-      await downloadTrack(songId);
-
-      let blob = await fetch(processedAudio.src).then(response => response.blob());
-      let file = new File([blob], 'filename.mp3', {type: 'audio/mpeg'});
-    
-      let list = new DataTransfer();
-      list.items.add(file);
-
-      let myFileList = list.files; 
-
-      console.log(avatarInputElement.files);
       const avatars = avatarInputElement.files;
-      const musics = myFileList;
+      const musics = audioInputElement.files;
       const email = emailInputElement.value;
       const password = passwordInputElement.value;
       const confirmPassword = confirmPasswordInputElement.value;
@@ -239,7 +223,20 @@ if (signUpBtn) {
       if (
         validateNewAccount({ avatars, musics, email, password, confirmPassword, fullname, age, position })
       ) {
-        console.log({ avatar: avatars[0], music: musics[0], email, password, fullname, age, position })
+        showLoading();
+
+        wavesurfer.pause();
+        
+        await downloadTrack(songId);
+  
+        let blob = await fetch(processedAudio.src).then(response => response.blob());
+        let file = new File([blob], 'filename.mp3', {type: 'audio/mpeg'});
+      
+        let list = new DataTransfer();
+        list.items.add(file);
+  
+        let myFileList = list.files; 
+  
         registerNewAccount({ avatar: avatars[0], music: musics[0], email, password, fullname, age, position });
       }
 
