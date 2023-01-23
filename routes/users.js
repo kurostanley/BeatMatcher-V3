@@ -1,6 +1,5 @@
 module.exports = function ({ app, dbConn, upload, constants, uploadFile, getFileStream, unlinkFile, bcrypt}) {
   app.get('/files/:key', (req, res) => {
-    console.log(req.params)
     const key = req.params.key
     const readStream = getFileStream(key)
   
