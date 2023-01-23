@@ -1,4 +1,4 @@
-module.exports = function ({ app, dbConn, upload, constants, uploadFile, getFileStream, unlinkFile }) {
+module.exports = function ({ app, dbConn, upload, constants, uploadFile, getFileStream, unlinkFile, bcrypt}) {
   app.get('/files/:key', (req, res) => {
     console.log(req.params)
     const key = req.params.key
@@ -13,17 +13,7 @@ module.exports = function ({ app, dbConn, upload, constants, uploadFile, getFile
     { name: "music", maxCount: 1 },
   ]), async(req, res, next) => {
     try{
-    // validate the avatar. The avatar is requied.
-    console.log(req.files)
-    console.log(req.files.music)
-    console.log(req.files.avatar)
-    
-    // const uploadMusic = await uploadFile(req.files.music);
-    // const uploadAvatar = await uploadFile(req.files.avatar);
-    // console.log("AWS: " + uploadMusic.Key + "," + uploadAvatar.Key)
-    // await unlinkFile(req.files.music[0].path)
-    // await unlinkFile(req.files.avatar[0].path)
-
+    // validate the avatar. The avatar is requied.    
 
     const file = req.files;
     if (!file.music[0] || !file.music[0].mimetype.includes("mpeg")) {
@@ -40,7 +30,9 @@ module.exports = function ({ app, dbConn, upload, constants, uploadFile, getFile
       const music = `/files/${file.music[0].key}`;
       // get user information and check the required fields.
       const { email, password, fullname, age, position, ccUid } = req.body;
-      if (email && password && fullname && age && position) {
+      const hashpassword = await bcrypt.hash(password, 10);
+
+      if (email && hashpassword && fullname && age && position) {
         // validate the email existed in the system, or not.
         const sql = "SELECT * FROM user_account WHERE user_email = ?";
         dbConn.query(sql, [email], function (err, result) {
@@ -48,7 +40,7 @@ module.exports = function ({ app, dbConn, upload, constants, uploadFile, getFile
             res.status(200).jsonp({ message: 'The email existed in the system' });
           } else {
             // create a new user if the email did not exist in the sytem.
-            const users = [[email, password, fullname, age, avatar, music, position, ccUid]];
+            const users = [[email, hashpassword, fullname, age, avatar, music, position, ccUid]];
             const insertSql = "INSERT INTO user_account (user_email, user_password, user_full_name, user_age, user_avatar, user_music_clip, user_position, user_uid) VALUES ?";
             dbConn.query(insertSql, [users], function (err, result) {
               if (err) {

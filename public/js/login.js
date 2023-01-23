@@ -299,8 +299,6 @@ if (loginBtn) {
         });
     } else {
       // hide loading indicator.
-      console.log('hi4')
-
       hideLoading();
       alert(`Your user's name or password is not correct`);
     }
