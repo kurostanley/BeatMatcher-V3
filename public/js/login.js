@@ -280,8 +280,15 @@ if (loginBtn) {
             // store logged in user in the local storage.
             localStorage.setItem("auth", JSON.stringify({ uid: res.data.uid, avatar: res.data.avatar, 
               name: res.data.name, position: res.data.position }));
+            // Set Cookie
+            document.cookie = `authUid = ${res.data.uid}`
+            document.cookie = `authAvatar = ${res.data.avatar}`
+            document.cookie = `authName = ${res.data.name}`
+            document.cookie = `authPosition = ${res.data.position}`
+            document.cookie = `token = ${res.data.token}`
+
             // redirect to home page.
-              window.location.href = "/";
+            window.location.href = "/";
           } else {
             // hide loading.
             hideLoading();

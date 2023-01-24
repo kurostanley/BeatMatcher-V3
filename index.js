@@ -14,6 +14,7 @@ const unlinkFile = util.promisify(fs.unlink)
 const multerS3 = require('multer-s3')
 const { uploadFile, getFileStream, upload } = require('./s3')
 const bcrypt = require("bcrypt")
+const jwt = require("jsonwebtoken")
 
 
 
@@ -119,7 +120,7 @@ dbConn.connect(function (err) {
     throw err;
   }
   console.log("Database was connected");
-  require("./routes")({ app, dbConn, upload, constants, uploadFile, getFileStream, unlinkFile, bcrypt})
+  require("./routes")({ app, dbConn, upload, constants, uploadFile, getFileStream, unlinkFile, bcrypt, jwt})
   // app.listen(PORT, () => {
   //   console.log(`Server is listening on port ${PORT}`);
   // });
