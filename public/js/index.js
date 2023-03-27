@@ -444,7 +444,7 @@ window.addEventListener("DOMContentLoaded", function () {
           if (index === 0) {
             cardList.innerHTML += `<div class="main__card-item" style="display: block;" data-id="${user.user_uid}" data-name="${user.user_full_name}">
               <div class="avatar" style="display: block; background-image: url(${user.user_avatar})">
-              <audio class="music" controls autoplay style="display: none;">
+              <audio class="music" controls preload="none" style="display: none; ">
                 <source src=${user.user_music_clip} type="audio/mpeg" class="avatar" style="display: block;">
               Your browser does not support the audio element.
               </audio>
@@ -471,7 +471,7 @@ window.addEventListener("DOMContentLoaded", function () {
             } else {
             cardList.innerHTML += `<div class="main__card-item" data-id="${user.user_uid}" data-name="${user.user_full_name}">
               <div class="avatar" style="display: block; background-image: url(${user.user_avatar})">
-              <audio class="music" controls style="display: none;">
+              <audio class="music" controls preload="none" style="display: none; ">
                 <source src=${user.user_music_clip} type="audio/mpeg" class="avatar" style="display: block;">
                 Your browser does not support the audio element. 
               </audio>
@@ -541,9 +541,57 @@ window.addEventListener("DOMContentLoaded", function () {
 
 
     }
+    
+    // play current music
+    // const playCurrentMusic = () => {
+    //   const i = getNextCard();
+    //   if(i){
+    //     let audio = $(i).find("audio").get(0);
+    //     const time = $(i).find('.time').get(0);
+    //     const progresses = Array.from($(i).find('.progress'));  
 
-    // playNextmusic
-    const playMusic = () => {
+    //     audio.play();
+
+    //     // Inital the progress bar
+    //     clearInterval(intervalId); // 清除之前的計時器
+    //     progresses.forEach(progress => {
+    //       progress.style.strokeDashoffset = 0;
+    //     })
+        
+    //     setInterval(() => {
+    //         let current = Math.floor(audio.currentTime);
+    //         let currentSmall = audio.currentTime;
+    //         let minute = Math.floor(current / 60);
+    //         let second = 30 - current % 60;
+    //         minute = minute < 10 ? '0' + minute : minute;
+    //         second = second < 10 ? '0' + second : second;
+    //         time.innerText = `${second}`
+    //         progresses.forEach(progress => {
+    //             progress.style.strokeDashoffset = 158 - (158 * ((currentSmall / 30) * 100)) / 100;
+    //         })
+    //     }, 100);    
+
+    //     $(audio).on('play', function() {
+    //       $('.play').css('opacity', '0');
+    //       $('.time').css('opacity' ,'70%');  
+    //     });
+          
+    //     $(audio).on('pause', function() {
+    //       $('.play').css('opacity', '100');
+    //       $('.time').css('opacity' ,'0');
+    //     });
+        
+    //     $(i).find(".play").on('click', function() {
+    //       console.log(audio);
+    //       audio.play();
+    //       $(this).css('opacity', '0');
+    //     });
+    //   }
+    // }
+
+
+    // play next music
+    const playNextMusic = () => {
       const i = getNextCard();
       if(i){
         let audio = $(i).find("audio").get(0);
@@ -586,8 +634,8 @@ window.addEventListener("DOMContentLoaded", function () {
           audio.play();
           $(this).css('opacity', '0');
         });
+      }
     }
-}
 
     
     // pauseCurrentMusic
@@ -629,7 +677,8 @@ window.addEventListener("DOMContentLoaded", function () {
             showMainCard();
             console.log(res.data)
             renderCardList(res.data);
-            progressbar()
+            $(".main__card-item").find("audio").get(0).play()
+            progressbar();
           }
         })
         .catch((error) => {
@@ -657,7 +706,7 @@ window.addEventListener("DOMContentLoaded", function () {
         if (currentCard) {
           swipeLeft(currentCard);
           pauseMusic();
-          playMusic();
+          playNextMusic();
         } else {
           hideMainCard();
         }
@@ -670,7 +719,7 @@ window.addEventListener("DOMContentLoaded", function () {
         if (currentCard) {
           swipeRight(currentCard);
           pauseMusic();
-          playMusic();
+          playNextMusic();
           setTimeout(() => {
             shouldHideMainCard();
           }, 1100);
