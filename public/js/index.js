@@ -291,7 +291,8 @@ window.addEventListener("DOMContentLoaded", function () {
         })
         .then(async(res) => {
           if (res && res.length !== 0) {
-            const userList = await getMatcherData(res.data);
+            console.log(res.data)
+            const userList = await getMatcherData(res.data.user.user_uid);
             mainLeftEmpty.classList.add('hide');
             mainLeftMessagesContainer.innerHTML = '';
             renderFriends(userList);

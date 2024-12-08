@@ -272,19 +272,20 @@ if (loginBtn) {
     const password = passwordLoginInputElement ? passwordLoginInputElement.value : null;
     if (isUserCredentialsValid({ email, password })) {
       axios
-        .post("/login", { email, password })
+        .post("/auth/login", { email, password })
         .then((res) => {
-          if (res && res.data && res.data.uid) {
+          console.log(res)
+          if (res && res.data && res.data.user.user_uid) {
             // hide loading.
             hideLoading();
             // store logged in user in the local storage.
             localStorage.setItem("auth", JSON.stringify({ uid: res.data.uid, avatar: res.data.avatar, 
               name: res.data.name, position: res.data.position }));
             // Set Cookie
-            document.cookie = `authUid = ${res.data.uid}`
-            document.cookie = `authAvatar = ${res.data.avatar}`
-            document.cookie = `authName = ${res.data.name}`
-            document.cookie = `authPosition = ${res.data.position}`
+            document.cookie = `authUid = ${res.data.user.user_uid}`
+            document.cookie = `authAvatar = ${res.data.user.user_avatar}`
+            document.cookie = `authName = ${res.data.user.user_name}`
+            document.cookie = `authPosition = ${res.data.user.user_position}`
             document.cookie = `token = ${res.data.token}`
 
             // redirect to home page.
